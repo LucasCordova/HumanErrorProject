@@ -1,0 +1,41 @@
+﻿.mh-100px {
+    min-height: 100px;
+}
+
+.mw-100px {
+    min-width: 100px;
+}
+
+.mw-300px {
+    min-width: 300px;
+}
+
+.mw-800px {
+    min-width: 800px;
+}
+
+.h-300px {
+    height: 300px;
+}
+
+.h-400px {
+    height: 400px;
+}
+
+.h-100px {
+    height: 100px;
+}
+
+.w-300px {
+    width: 300px;
+}
+
+.w-400px {
+    width: 400px;
+}
+
+.w-100px {
+    width: 100px;
+}
+
+

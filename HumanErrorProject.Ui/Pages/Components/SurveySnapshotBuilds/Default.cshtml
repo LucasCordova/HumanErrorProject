@@ -1,0 +1,25 @@
+﻿@model DataVisuals.DonutChart
+
+<div class="container bg-light my-3 pt-3 pb-5 px-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h2 class="display-4">
+            Overall Builds
+        </h2>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                @Model.Values[0] Successful
+            </li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Values[1] Failures
+            </li>
+        </ul>
+    </div>
+    <div class="row justify-content-center align-items-center ">
+        <div id="@Model.Id" class="mh-100px h-300px mw-100px">
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("Shared/Charts/_DonutChartPartial", Model)

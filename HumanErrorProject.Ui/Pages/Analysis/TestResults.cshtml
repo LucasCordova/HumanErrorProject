@@ -1,0 +1,114 @@
+﻿@page "{id}"
+@using Data.Models
+@model TestResultsModel
+@{
+}
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Test Results
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.Assignment.Name</li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is stats on how many students are passing which tests. Student who don't have a successful snapshot was not included.
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Index"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Assignments/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@if (Model.LatestSnapshots.Count > 0)
+{
+    @await Component.InvokeAsync("AssignmentSnapshotsTestResults", Model.LatestSnapshots)
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                Test Results
+            </h2>
+            <p class="lead">
+                Below is the number of students who are passsing each tests.
+            </p>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Category</th>
+                    <th class="text-center">Test Name</th>
+                    <th class="text-center">Number of Students Passing</th>
+                    <th class="text-center">Number of Students Failing</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var test in Model.Assignment.TestProject.UnitTests.OrderBy(x => x.Category))
+                {
+                    <tr>
+                        <td class="text-center">
+                            @test.Category
+                        </td>
+                        <td class="text-center">@test.Name</td>
+                        <td class="text-success text-center">
+                            @Model.LatestSnapshots.Count(x => ((SnapshotSuccessReport)x.Report).UnitTestResults.First(y => y.UnitTestId.Equals(test.Id)).Passed)
+                        </td>
+                        <td class="text-danger text-center">
+                            @Model.LatestSnapshots.Count(x => !((SnapshotSuccessReport)x.Report).UnitTestResults.First(y => y.UnitTestId.Equals(test.Id)).Passed)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <h4 class="display-4">
+            Students
+        </h4>
+        <p class="lead">
+            View test scores for individual students
+        </p>
+        <form method="post">
+            <div class="form-group">
+                <div class="input-group">
+                    <select class="custom-select" name="studentId" asp-items="ViewBag.Students"></select>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary">Select</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+else
+{
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                No Successful Snapshots
+            </h2>
+            <p class="lead">
+                Your students need help!
+            </p>
+        </div>
+    </div>
+}

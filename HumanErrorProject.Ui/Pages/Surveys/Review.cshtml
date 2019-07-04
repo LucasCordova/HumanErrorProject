@@ -1,0 +1,38 @@
+﻿@page "{id}"
+@using Data.Models
+@model ReviewModel
+@{
+}
+
+<div class="container mx-auto text-center">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Review Survey
+        </h1>
+        <p class="lead">
+            Below is your answers to the questions.
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Surveys/Details"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary text-white"
+               role="button">
+                Back to Snapshots
+            </a>
+        </div>
+    </div>
+</div>
+@foreach (var surveyResponse in Model.Survey.SurveyResponses)
+{
+    switch (surveyResponse.Question.Type)
+    {
+        case SurveyQuestion.SurveyQuestionTypes.Qualitative:
+            @await Html.PartialAsync("Shared/SurveyResponses/_SurveyResponseQualitativeDisplayPartial", surveyResponse)
+            break;
+        case SurveyQuestion.SurveyQuestionTypes.Rate:
+            @await Html.PartialAsync("Shared/SurveyResponses/_SurveyResponseRateDisplayPartial", surveyResponse)
+            break;
+        default:
+            throw new ArgumentOutOfRangeException();
+    }
+}

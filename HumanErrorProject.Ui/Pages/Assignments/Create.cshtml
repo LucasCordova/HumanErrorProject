@@ -1,0 +1,204 @@
+﻿@page "{id}"
+@model CreateModel
+@{
+}
+
+@section Navbar
+{
+    <partial name="_CourseClassNavbarPartial" model="@Model.Id" />
+}
+
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Create a Assignment
+        </h1>
+        <p class="lead">
+            Creating an assignment is quick and easy. It's fun for the whole family.
+        </p>
+        <a asp-page="/Assignments/Index"
+           asp-route-id="@Model.Id"
+           class="text-primary">Back to list</a>
+    </div>
+</div>
+<form method="post" enctype="multipart/form-data">
+    <div class="container my-5">
+        <div class="row text-center">
+            <div class="col-md-6 col-sm-12 bg-dark text-white pt-3 pb-5 px-5 shadow-sm">
+                <h2 class="display-2">
+                    Details
+                </h2>
+                <div class="form-group">
+                    <label asp-for="PreAssignment.Name" class="form-text"></label>
+                    <input asp-for="PreAssignment.Name" class="form-control" />
+                    <span asp-validation-for="PreAssignment.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PreAssignment.Filename" class="form-text"></label>
+                    <input asp-for="PreAssignment.Filename" class="form-control" />
+                    <span asp-validation-for="PreAssignment.Filename" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PreAssignment.Solution.Name" class="form-text"></label>
+                    <input asp-for="PreAssignment.Solution.Name" class="form-control" />
+                    <span asp-validation-for="PreAssignment.Solution.Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 bg-white pt-3 pb-1 px-5 shadow-sm">
+                <h2 class="display-2">
+                    Test Project Details
+                </h2>
+                <div class="form-group">
+                    <label asp-for="PreAssignment.TestProject.TestFolder" class="form-text"></label>
+                    <input asp-for="PreAssignment.TestProject.TestFolder" class="form-control" />
+                    <span asp-validation-for="PreAssignment.TestProject.TestFolder" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PreAssignment.TestProject.TestDllFile" class="form-text"></label>
+                    <input asp-for="PreAssignment.TestProject.TestDllFile" class="form-control" />
+                    <span asp-validation-for="PreAssignment.TestProject.TestDllFile" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PreAssignment.TestProject.TestProjectFile" class="form-text"></label>
+                    <input asp-for="PreAssignment.TestProject.TestProjectFile" class="form-control" />
+                    <span asp-validation-for="PreAssignment.TestProject.TestProjectFile" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container my-5 bg-light pt-3 pb-5 px-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-2">
+                Method Declarations
+            </h2>
+        </div>
+        <table class="table table-striped">
+            <tbody>
+                @for (var i = 0; i < Model.PreAssignment.Solution.MethodDeclarations.Count; i++)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            <input type="hidden" asp-for="PreAssignment.Solution.MethodDeclarations[i].AstType"/>
+                            @Model.PreAssignment.Solution.MethodDeclarations[i].AstType
+                        </td>
+                        <td class="align-middle">
+                            <input type="hidden" asp-for="PreAssignment.Solution.MethodDeclarations[i].PreprocessorDirective"/>
+                            @Model.PreAssignment.Solution.MethodDeclarations[i].PreprocessorDirective
+                        </td>
+                        <td class="align-middle">
+                            <input type="hidden" asp-for="PreAssignment.Solution.MethodDeclarations[i].AstMethodRegexExpression"/>
+                            @Model.PreAssignment.Solution.MethodDeclarations[i].AstMethodRegexExpression
+                        </td>
+                        <td class="align-middle">
+                            <input type="hidden" asp-for="PreAssignment.Solution.MethodDeclarations[i].AstMethodParameterRegexExpression"/>
+                            @Model.PreAssignment.Solution.MethodDeclarations[i].AstMethodParameterRegexExpression
+                        </td>
+                        <td class="align-middle">
+                            <button type="submit" class="btn btn-link text-danger" asp-page-handler="RemoveMethod"
+                                    asp-route-index="@i">
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="mt-1">
+            <p class="lead">
+                Add Method Declaration
+            </p>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="MethodDeclaration.AstType" class="form-text"></label>
+                        <select asp-for="MethodDeclaration.AstType" class="form-control" asp-items="ViewBag.Types"></select>
+                        <span asp-validation-for="MethodDeclaration.AstType" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="MethodDeclaration.PreprocessorDirective" class="form-text"></label>
+                        <input asp-for="MethodDeclaration.PreprocessorDirective" class="form-control" />
+                        <span asp-validation-for="MethodDeclaration.PreprocessorDirective" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="MethodDeclaration.AstMethodRegexExpression" class="form-text"></label>
+                <input asp-for="MethodDeclaration.AstMethodRegexExpression" class="form-control" />
+                <span asp-validation-for="MethodDeclaration.AstMethodRegexExpression" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MethodDeclaration.AstMethodParameterRegexExpression" class="form-text"></label>
+                <input asp-for="MethodDeclaration.AstMethodParameterRegexExpression" class="form-control" />
+                <span asp-validation-for="MethodDeclaration.AstMethodParameterRegexExpression" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-success" type="submit" asp-page-handler="AddMethod">
+                    Add
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container my-3 bg-dark text-white pt-3 pb-5 px-5 shadow-sm">
+        <h2 class="display-2">
+            Files
+        </h2>
+        <div class="form-group">
+            <label asp-for="SolutionFiles" class="form-text"></label>
+            <div class="custom-file bg-dark">
+                <input type="file" class="custom-file-input form-control" asp-for="SolutionFiles" 
+                       id="validatedCustomSolutionFile"/>
+                <label class="custom-file-label" asp-for="PreAssignment.Solution.Files"
+                       for="validatedCustomSolutionFile">Choose file</label>
+            </div>
+            <span asp-validation-for="SolutionFiles" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TestProjectFiles" class="form-text"></label>
+            <div class="custom-file bg-dark">
+                <input type="file" class="custom-file-input form-control" 
+                       id="validatedCustomTestFile" 
+                       asp-for="TestProjectFiles" />
+                <label class="custom-file-label" 
+                       asp-for="TestProjectFiles"
+                       for="validatedCustomTestFile">Choose file</label>
+            </div>
+            <span asp-validation-for="TestProjectFiles" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="container my-5 bg-light pt-3 pb-5 px-5 text-center shadow-sm">
+        <h2 class="display-2">
+            Finished ?
+        </h2>
+        <p class="lead">
+            Make sure to double and triple check.
+        </p>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" asp-page-handler="Create">
+                Create
+            </button>
+        </div>
+    </div>
+    <div class="container py-5"></div>
+</form>
+
+@section Scripts
+{
+    <script src="~/js/refresh_post_fix.js"></script>
+    <script type="text/javascript">
+        $('#validatedCustomSolutionFile').change(function(event){
+            var fileName = event.target.files[0].name;
+            if (event.target.nextElementSibling!=null){
+                event.target.nextElementSibling.innerText=fileName;
+            }
+        });
+        $('#validatedCustomTestFile').change(function(event){
+            var fileName = event.target.files[0].name;
+            if (event.target.nextElementSibling!=null){
+                event.target.nextElementSibling.innerText=fileName;
+            }
+        });
+    </script>
+}

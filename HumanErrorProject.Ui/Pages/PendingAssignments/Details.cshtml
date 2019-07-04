@@ -1,0 +1,31 @@
+﻿@page "{id}"
+@model DetailsModel
+@{
+}
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.Assignment.Name
+        </h1>
+        <p class="lead">
+            @await Html.PartialAsync("Shared/_PreAssignmentTypePartial", Model.Assignment)
+        </p>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.Assignment.Filename</li>
+            <li class="list-inline-item">@Model.Assignment.Solution.Name</li>
+        </ul>
+        <a asp-page="/PendingAssignments/Index"
+           asp-route-id="@Model.Assignment.CourseClassId"
+           class="text-primary">
+            Back to list
+        </a>
+    </div>
+</div>
+@await Component.InvokeAsync("PreAssignmentReport", Model.Assignment)
+<div class="container py-5"></div>

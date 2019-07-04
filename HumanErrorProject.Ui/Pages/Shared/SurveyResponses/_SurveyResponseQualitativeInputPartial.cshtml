@@ -1,0 +1,43 @@
+﻿@using Data.Models
+@model Data.Models.SurveyResponse
+
+@{
+    var Question = (SurveyQuestionQualitative)Model.Question;
+    var Answer = (SurveyAnswerQualitative)Model.Answer;
+}
+
+<div class="container mt-5 bg-light py-3 px-5 shadow-sm">
+    <input asp-for="Answer.Type" type="hidden"/>
+    <input asp-for="Question.Type" type="hidden"/>
+    <input asp-for="Question.Id" type="hidden"/>
+    <input asp-for="Question.Required" class="d-none" type="checkbox"/>
+    <input asp-for="@Question.Prompt" type="hidden"/>
+    <div class="mx-auto text-center">
+        <h3 class="display-4">
+            Qualitative Question
+        </h3>
+    </div>
+    <div class="form-group">
+        <p class="lead">
+            Prompt - @Question.Prompt
+        </p>
+        @if (Question.Required)
+        {
+            <p class="lead text-info">
+                Required
+            </p>
+        }
+    </div>
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    Response
+                </span>
+            </div>
+            <textarea asp-for="@Answer.Response" class="form-control"
+                      placeholder="My response is..."></textarea>
+        </div>
+        <span asp-validation-for="@Answer.Response" class="text-danger"></span>
+    </div>
+</div>

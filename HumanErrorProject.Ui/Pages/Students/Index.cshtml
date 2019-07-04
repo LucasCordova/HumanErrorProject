@@ -1,0 +1,81 @@
+﻿@page "{step?}"
+@model IndexModel
+@{
+}
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">Students</h1>
+        <p class="lead">
+            All these students with their mistakes.
+        </p>
+        <a asp-page="/Students/Create" class="btn btn-primary">
+            Add a Student
+        </a>
+    </div>
+</div>
+<div class="container mt-5">
+    <div class="row text-center">
+        @foreach (var student in await Model.GetStudents())
+        {
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        @student.Email
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            @student.Name
+                        </h1>
+                        <ul class="list-unstyled">
+                            <li>
+                                @student.StudentCourseClasses.Count Classes
+                            </li>
+                            <li>
+                                @student.Submissions.Count Submissions
+                            </li>
+                        </ul>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Students/Edit"
+                               asp-route-id="@student.Id"
+                               role="button">
+                                Edit
+                            </a>
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Students/Delete"
+                               asp-route-id="@student.Id"
+                               role="button">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (await Model.IsPrevious())
+            {
+                <a asp-page="/Students/Index"
+                   asp-route-step="@(Model.Step - 1)">
+                    <i class="fas fa-arrow-left"></i>
+                    Previous
+                </a>
+            }
+        </div>
+        <div>
+            @if (await Model.IsNext())
+            {
+                <a asp-page="/Students/Index"
+                   asp-route-step="@(Model.Step + 1)">
+                    Next
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>

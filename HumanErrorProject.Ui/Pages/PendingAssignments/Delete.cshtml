@@ -1,0 +1,43 @@
+﻿@page "{id}"
+@model DeleteModel
+@{
+}
+
+@section Navbar
+{
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-5">
+            <form method="post">
+                <h1 class="font-weight-bold">Delete Pending Assignment</h1>
+                <a asp-page="/PendingAssignments/Index"
+                   asp-route-id="@Model.Assignment.CourseClassId"
+                   class="text-primary">
+                    Back to list
+                </a>
+                <hr/>
+                <div class="form-group mt-3">
+                    <h3>Are you sure?</h3>
+                </div>
+                <div class="form-group">
+                    <p class="lead">
+                        @Model.Assignment.Name
+                    </p>
+                </div>
+                <div class="form-group">
+                    <p class="lead">
+                        @Model.Assignment.Filename
+                    </p>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-danger">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

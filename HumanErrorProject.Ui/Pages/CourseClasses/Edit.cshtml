@@ -1,0 +1,59 @@
+﻿@page "{id}"
+@model EditModel
+@{
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-5">
+            <form method="post">
+                <h1 class="font-weight-bold">Edit Class</h1>
+                <a asp-page="/CourseClasses/Index" class="text-primary">Back to list</a>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <input asp-for="CourseClass.Id" type="hidden"/>
+                <div class="form-group mt-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Name
+                            </span>
+                        </div>
+                        <input asp-for="CourseClass.Name" class="form-control"
+                               placeholder="Class's Name" />
+                    </div>
+                    <span asp-validation-for="CourseClass.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Term
+                            </span>
+                        </div>
+                        <input asp-for="CourseClass.Term" class="form-control"
+                               placeholder="Term" />
+                    </div>
+                    <span asp-validation-for="CourseClass.Term" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Course
+                            </span>
+                        </div>
+                        <input asp-for="CourseClass.Course" class="form-control"
+                               placeholder="Course's Name" />
+                    </div>
+                    <span asp-validation-for="CourseClass.Course" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

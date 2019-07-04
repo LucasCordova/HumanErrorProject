@@ -1,0 +1,19 @@
+﻿@model HumanErrorProject.Data.Models.SurveyQuestionQualitative
+
+<p class="lead">
+    @Model.Prompt
+</p>
+<p class="lead">
+    @if (Model.Required)
+    {
+        <span class="text-success">
+            Required
+        </span>
+    }
+    else
+    {
+        <span>
+            Not Required
+        </span>
+    }
+</p>

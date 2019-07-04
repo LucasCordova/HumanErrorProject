@@ -1,0 +1,21 @@
+﻿@using HumanErrorProject.Data.Models
+@model HumanErrorProject.Data.Models.PreAssignment
+
+@switch (Model.PreAssignmentReport.Type)
+{
+    case PreAssignmentReport.PreAssignmentReportTypes.Pending:
+        <span>
+            @Model.PreAssignmentReport.TypeValue()
+        </span>
+        break;
+    case PreAssignmentReport.PreAssignmentReportTypes.Success:
+        <span class="text-success">
+            @Model.PreAssignmentReport.TypeValue()
+        </span>
+        break;
+    default:
+        <span class="text-danger">
+            @Model.PreAssignmentReport.TypeValue()
+        </span>
+        break;
+}

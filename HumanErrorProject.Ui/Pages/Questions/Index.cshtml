@@ -1,0 +1,78 @@
+﻿@page "{step?}"
+@using HumanErrorProject.Data.Models
+@model IndexModel
+@{
+}
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Your Questions
+        </h1>
+        <p class="lead">
+            All your questions to disect the student's errors
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Questions/Create"
+               asp-route-type="@((int)SurveyQuestion.SurveyQuestionTypes.Qualitative)"
+               class="btn btn-primary" role="button">
+                Create a Qualitative Question
+            </a>
+            <a asp-page="/Questions/Create"
+               asp-route-type="@((int)SurveyQuestion.SurveyQuestionTypes.Rate)"
+               class="btn btn-primary" role="button">
+                Create a Rate Question
+            </a>
+        </div>
+    </div>
+</div>
+@foreach (var question in await Model.GetQuestions())
+{
+    <div class="container mt-5 bg-light py-3 px-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h3 class="display-4">
+                @await Html.PartialAsync("Shared/_QuestionTypePartial", question)
+            </h3>
+        </div>
+        @await Component.InvokeAsync("SurveyQuestionDisplay", question)
+        <div class="btn-group">
+            <a asp-page="/Questions/Edit"
+               asp-route-id="@question.Id"
+               class="btn btn-primary text-white"
+               role="button">
+                Edit
+            </a>
+            <a asp-page="/Questions/Delete"
+               asp-route-id="@question.Id"
+               class="btn btn-primary text-white"
+               role="button">
+                Delete
+            </a>
+        </div>
+    </div>
+}
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (await Model.IsPrevious())
+            {
+                <a asp-page="/Questions/Index"
+                   asp-route-step="@(Model.Step - 1)">
+                    <i class="fas fa-arrow-left"></i>
+                    Previous
+                </a>
+            }
+        </div>
+        <div>
+            @if (await Model.IsNext())
+            {
+                <a asp-page="/Questions/Index"
+                   asp-route-step="@(Model.Step + 1)">
+                    Next
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+

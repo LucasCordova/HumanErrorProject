@@ -1,0 +1,146 @@
+﻿@page "{id}"
+@model BagOfWordsModel
+@{
+}
+
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Bag of Words Metrics
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                @Model.Assignment.Name
+            </li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is stats on how the comparision of students method to solutions.
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Index" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Analysis/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@if (Model.LatestSnapshots.Count > 0)
+{
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                Bag of Words Metric
+            </h2>
+            <p class="lead">
+                Below is metrics for each method.
+            </p>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            Method
+                        </th>
+                        <th class="text-center">
+                            Number of Declared
+                        </th>
+                        <th class="text-center text-success">
+                            Least
+                        </th>
+                        <th class="text-center text-primary">
+                            Average
+                        </th>
+                        <th class="text-center text-danger">
+                            Most
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var method in Model.Assignment.Solution.MethodDeclarations)
+                    {
+                        <tr>
+                            <td class="text-lowercase text-center">
+                                @method.PreprocessorDirective
+                            </td>
+                            @{
+                                var count = Model.LatestSnapshots.Count(x => Model.GetSnapshotMethod(x, method).Declared);
+                                var least = Model.GetLeastCodeAnalysisMetricOrDefault(Model.LatestSnapshots, method);
+                                var average = Model.GetAverageCodeAnalysisMetricOrDefault(Model.LatestSnapshots, method);
+                                var most = Model.GetMostCodeAnalysisMetricOrDefault(Model.LatestSnapshots, method);
+                            }
+                            <td class="text-center">
+                                @count
+                            </td>
+                            @if (count == 0)
+                            {
+                                <td colspan="3" class="text-center">
+                                    None declared.
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center text-success">
+                                    @least.Difference
+                                </td>
+                                <td class="text-center text-primary">
+                                    @average.Difference
+                                </td>
+                                <td class="text-center text-danger">
+                                    @most.Difference
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <h4 class="display-4">
+            Students
+        </h4>
+        <p class="lead">
+            View bag of words for individual students
+        </p>
+        <form method="post">
+            <div class="form-group">
+                <div class="input-group">
+                    <select class="custom-select" name="studentId" asp-items="ViewBag.Students"></select>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary">Select</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+else
+{
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                No Successful Snapshots
+            </h2>
+            <p class="lead">
+                Your students need help!
+            </p>
+        </div>
+    </div>
+}

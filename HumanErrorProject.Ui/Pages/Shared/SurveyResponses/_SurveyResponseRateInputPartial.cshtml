@@ -1,0 +1,64 @@
+﻿@using Data.Models
+@model Data.Models.SurveyResponse
+
+@{
+    var Question = (SurveyQuestionRate)Model.Question;
+    var Answer = (SurveyAnswerRate)Model.Answer;
+    var rangeOutputid = $"rangeOutput{Question.Id}";
+    var rangeInputId = $"rangeInput{Question.Id}";
+    var onInput = $"{rangeOutputid}.value = {rangeInputId}.value";
+}
+
+
+<div class="container mt-5 bg-light py-3 px-5 shadow-sm">
+    <input asp-for="Answer.Type" type="hidden" />
+    <input asp-for="Question.Type" type="hidden" />
+    <input asp-for="Question.Id" type="hidden" />
+    <input asp-for="Question.Required" class="d-none" type="checkbox" />
+    <input asp-for="@Question.Category" type="hidden" />
+    <input asp-for="@Question.Example" type="hidden" />
+    <input asp-for="@Question.Explaination" type="hidden" />
+    <input asp-for="@Question.Range" type="hidden" />
+    <div class="mx-auto text-center">
+        <h3 class="display-4">
+            Rate Question
+        </h3>
+    </div>
+    <div class="form-group">
+        <p class="lead">
+            Category - @Question.Category
+        </p>
+        <p class="lead">
+            Example - @Question.Example
+        </p>
+        <p class="lead">
+            Explaination - @Question.Explaination
+        </p>
+        @if (Question.Required)
+        {
+            <p class="lead text-info">
+                Required
+            </p>
+        }
+    </div>
+    <div class="form-group">
+        <span class="float-right">
+            <output id="@rangeOutputid">
+                @if (Answer.Selection == 0)
+                {
+                    @:2
+                }
+                else
+                {
+                    @Answer.Selection
+                }
+            </output>
+        </span>
+        <input asp-for="@Answer.Selection" type="range"
+               class="custom-range" min="2" max="@Question.Range"
+               step="1" id="@rangeInputId" oninput="@onInput" />
+        <span asp-validation-for="@Answer.Selection" class="text-danger"></span>
+    </div>
+</div>
+
+

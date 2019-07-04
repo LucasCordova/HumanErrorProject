@@ -1,0 +1,57 @@
+﻿@page "{type}"
+@using HumanErrorProject.Data.Models
+@model CreateModel
+@{
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-5">
+            <form method="post">
+                <h1 class="font-weight-bold">
+                    Create Question
+                </h1>
+                <a asp-page="/Questions/Index" class="text-primary">
+                    Back to list
+                </a>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <input type="hidden" asp-for="Question.Type" />
+                @switch (Model.Question.Type)
+                {
+                    case SurveyQuestion.SurveyQuestionTypes.Qualitative:
+                        @await Html.PartialAsync("Shared/SurveyQuestions/_SurveyQuestionQualitativeInputPartial",
+                            (SurveyQuestionQualitative) Model.Question,
+                            new ViewDataDictionary(ViewData)
+                            {
+                                TemplateInfo =
+                                {
+                                    HtmlFieldPrefix = "Question"
+                                }
+                            })
+                        break;
+                    case SurveyQuestion.SurveyQuestionTypes.Rate:
+                        @await Html.PartialAsync("Shared/SurveyQuestions/_SurveyQuestionRateInputPartial",
+                            (SurveyQuestionRate) Model.Question,
+                            new ViewDataDictionary(ViewData)
+                            {
+                                TemplateInfo =
+                                {
+                                    HtmlFieldPrefix = "Question"
+                                }
+                            })
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

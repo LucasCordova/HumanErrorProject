@@ -1,0 +1,29 @@
+﻿@model HumanErrorProject.Data.Models.SurveyQuestionRate
+
+<h3 class="lead">
+    @Model.Category
+</h3>
+<p class="lead">
+    Rate 1 - @Model.Range
+</p>
+<p class="lead">
+    @Model.Example
+</p>
+<p class="lead">
+    @Model.Explaination
+</p>
+<p class="lead">
+    @if (Model.Required)
+    {
+        <span class="text-success">
+            Required
+        </span>
+    }
+    else
+    {
+        <span>
+            Not Required
+        </span>
+    }
+</p>
+

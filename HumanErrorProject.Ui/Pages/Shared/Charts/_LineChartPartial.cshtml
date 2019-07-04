@@ -1,0 +1,67 @@
+﻿@using Newtonsoft.Json
+@model DataVisuals.LineChart
+
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var xvalues = model.XValues;
+    var yvalues = model.YValues;
+    var colors = model.Colors;
+
+    var $container = $(id),
+        margin = { top: 30, right: 30, bottom: 30, left: 40 },
+        width = $container.width() - margin.left - margin.right,
+        height = $container.height() - margin.top - margin.bottom,
+        min = Math.min(width, height);
+
+    var svg = d3.select(id)
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+        .attr('preserveAspectRatio', 'xMidYMax meet')
+        .append('g')
+        .attr('transform',
+            'translate(' + margin.left + ',' + margin.top + ')');
+
+    var x = d3.scaleLinear()
+        .domain([d3.min(xvalues), d3.max(xvalues)])
+        .range([0, width]);
+
+    svg.append('g')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+    var y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([d3.min(yvalues), d3.max(yvalues)]);
+
+    svg.append('g')
+        .call(d3.axisLeft(y));
+
+    var data = d3.entries(yvalues);
+
+    svg.append('path')
+        .datum(data)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1.5)
+        .attr('d', d3.line().curve(d3.curveNatural)
+            .x(function (d, i) {
+                return x(xvalues[i]);
+            })
+            .y(function (d, i) { return y(yvalues[i]); }));
+
+    svg.append("g")
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d,i) { return x(xvalues[i]) })
+        .attr("cy", function(d,i) { return y(yvalues[i]) })
+        .attr("r", 5)
+        .attr("fill", function(d, i) {
+            return colors[i];
+        });
+
+</script>

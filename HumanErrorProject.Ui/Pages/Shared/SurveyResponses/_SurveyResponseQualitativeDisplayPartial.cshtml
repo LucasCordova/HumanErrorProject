@@ -1,0 +1,30 @@
+﻿@using Data.Models
+@model Data.Models.SurveyResponse
+
+@{
+    var question = (SurveyQuestionQualitative)Model.Question;
+    var answer = (SurveyAnswerQualitative)Model.Answer;
+}
+
+<div class="container mt-5 bg-light py-3 px-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h3 class="display-4">
+            Qualitative Question
+        </h3>
+    </div>
+    <p class="lead">
+        Prompt - @question.Prompt
+    </p>
+    @if (string.IsNullOrEmpty(answer.Response))
+    {
+        <p class="lead text-info">
+            Answer was not provided
+        </p>
+    }
+    else
+    {
+        <p class="lead">
+            Your Response - @answer.Response
+        </p>
+    }
+</div>

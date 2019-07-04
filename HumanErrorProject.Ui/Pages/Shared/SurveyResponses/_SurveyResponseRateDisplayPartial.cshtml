@@ -1,0 +1,36 @@
+﻿@using Data.Models
+@model Data.Models.SurveyResponse
+
+@{
+    var question = (SurveyQuestionRate)Model.Question;
+    var answer = (SurveyAnswerRate)Model.Answer;
+}
+
+<div class="container mt-5 bg-light py-3 px-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h3 class="display-4">
+            Rate Question
+        </h3>
+    </div>
+    <p class="lead">
+        Category - @question.Category
+    </p>
+    <p class="lead">
+        Example - @question.Example
+    </p>
+    <p class="lead">
+        Explaination @question.Explaination
+    </p>
+    @if (answer.Selection == 0)
+    {
+        <p class="lead text-info">
+            Answer was not provided
+        </p>
+    }
+    else
+    {
+        <p class="lead">
+            You selected @answer.Selection from 1 to @question.Range
+        </p>
+    }
+</div>

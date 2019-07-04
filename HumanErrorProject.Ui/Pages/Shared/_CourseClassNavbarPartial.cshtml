@@ -1,0 +1,15 @@
+﻿@model int
+
+<ul class="nav navbar-nav">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarCourse" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Course
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="nav-link" href="~/CourseClasses/Details/@Model">Details</a>
+            <a class="nav-link" href="~/CourseClasses/Students/@Model">Students</a>
+            <a class="nav-link" href="~/Assignments/@Model">Assignments</a>
+            <a class="nav-link" href="/PendingAssignments/@Model">Pending Assignments</a>
+        </div>
+    </li>
+</ul>

@@ -1,0 +1,198 @@
+﻿@page "{id}"
+@model IndexModel
+@{
+}
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.Assignment.Name
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.Assignment.Filename</li>
+            <li class="list-inline-item">@Model.Assignment.Solution.Name</li>
+        </ul>
+        <div class="btn-group">
+            <a asp-page="/Assignments/Index"
+               asp-route-id="@Model.Assignment.CourseClassId"
+               class="text-white btn btn-primary" role="button">
+                Back to list
+            </a>
+            <a asp-page="/Assignments/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@if (Model.Assignment.Snapshots.Count > 0)
+{
+    @await Component.InvokeAsync("AssignmentSnapshotsBuilds", Model.Assignment)
+    <div class="container mt-5">
+        <div class="row text-center">
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Analysis
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            Test Results
+                        </h1>
+                        <p class="lead">
+                            See how the class is performing on tests
+                        </p>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/TestResults"
+                               asp-route-id="@Model.Id"
+                               role="button">
+                                Go
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Analysis
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            Surveys
+                        </h1>
+                        <p class="lead">
+                            See how the class is answering surveys
+                        </p>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/Surveys"
+                               asp-route-id="@Model.Id"
+                               role="button">
+                                Go
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Analysis
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            Bag of Words
+                        </h1>
+                        <p class="lead">
+                            See how the class is differing in words
+                        </p>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/BagOfWords"
+                               asp-route-id="@Model.Id"
+                               role="button">
+                                Go
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Analysis
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            Abstract Syntax Tree
+                        </h1>
+                        <p class="lead">
+                            See how the class is differing in trees
+                        </p>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/AbstractSyntaxTrees"
+                               asp-route-id="@Model.Id"
+                               role="button">
+                                Go
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Analysis
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            Markov Model
+                        </h1>
+                        <p class="lead">
+                            Create and View Markov Models
+                        </p>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/MarkovModelCreator"
+                               asp-route-id="@Model.Id"
+                               role="button">
+                                Create
+                            </a>
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/MarkovModels"
+                               asp-route-id="@Model.Id"
+                               role="button">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Analysis
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            Method Declarations
+                        </h1>
+                        <p class="lead">
+                            See what methods are declared
+                        </p>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/MethodDeclarations"
+                               asp-route-id="@Model.Id"
+                               role="button">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container bg-light my-3 py-3 px-5">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                No Analysis Available
+            </h2>
+            <p class="lead">
+                No snapshots have been submitted yet.
+            </p>
+        </div>
+    </div>
+}

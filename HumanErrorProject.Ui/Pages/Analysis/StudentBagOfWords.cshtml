@@ -1,0 +1,125 @@
+﻿@page "{id}/{studentId}"
+@model StudentBagOfWordsModel
+@{
+}
+
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.Student.Name Bag of Words Metric
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                @Model.Assignment.Name
+            </li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is stats on the @Model.Student.Name bag of words metrics
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Index"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Analysis/BagOfWords"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Bag of Words
+            </a>
+            <a asp-page="/Assignments/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@{
+    var snapshots = (await Model.GetBuildSnapshots()).OrderBy(x => x.SnapshotSubmission.CreatedDateTime).ToList();
+}
+@if (snapshots.Any())
+{
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                Bag of Words Metrics
+            </h2>
+            <p class="lead">
+                Below is metrics for each method
+            </p>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        Method
+                    </th>
+                    <th class="text-center">
+                        Number of Declared
+                    </th>
+                    <th class="text-center">
+                        Least
+                    </th>
+                    <th class="text-center">
+                        Latest
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var method in Model.Assignment.Solution.MethodDeclarations)
+                {
+                    <tr>
+                        <td class="text-lowercase text-center">
+                            @method.PreprocessorDirective
+                        </td>
+                        @{
+                            var count = snapshots.Count(x => Model.GetSnapshotMethod(x, method).Declared);
+                            var least = Model.GetLeastCodeAnalysisMetricOrDefault(snapshots, method);
+                            var latest = Model.GetLatestCodeAnalysisMetricOrDefault(snapshots, method);
+                        }
+                        <td class="text-center">
+                            @count
+                        </td>
+                        @if (count == 0)
+                        {
+                            <td colspan="2" class="text-center">
+                                None declared.
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-center text-success">
+                                @least.Difference
+                            </td>
+                            if (latest == null)
+                            {
+                                <td class="text-center">
+                                    Not Declared
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center text-primary">
+                                    @latest.Difference
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

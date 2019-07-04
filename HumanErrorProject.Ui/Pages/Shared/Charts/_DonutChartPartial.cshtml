@@ -1,0 +1,55 @@
+﻿@using Newtonsoft.Json
+@model DataVisuals.DonutChart
+
+
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var values = model.Values;
+    var colors = model.Colors;
+    var text = model.Text;
+
+    var $container = $(id),
+        width = $container.width(),
+        height = $container.height(),
+        min = Math.min(width, height),
+        outerRadius = min/2,
+        innerRadius = (outerRadius / 5) * 4,
+        fontSize = min / 6;
+
+    var arc = d3.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius);
+
+    var svg = d3.select(id)
+        .append("svg")
+        .attr("width", '100%')
+        .attr("height", '100%')
+        .attr('viewBox', '0 0 ' + min + ' ' + min)
+        .attr('preserveAspectRatio', 'xMinYMin')
+        .append("g")
+        .attr("transform", "translate(" + min / 2 + "," + min / 2 + ")");
+
+    
+    svg.append('text')
+        .text(text)
+        .attr('text-anchor', 'middle')
+        .style('font-size', fontSize + 'px')
+        .attr('dy', fontSize / 3)
+        .attr('dx', 2);
+
+    var pie = d3.pie()
+        .padAngle(0.005)
+        .value(function (d) { return d.value; });
+
+    var data_ready = pie(d3.entries(values));
+
+    svg.selectAll('.slices')
+        .data(data_ready)
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', function(d,i) {
+            return colors[i];
+        });
+</script>

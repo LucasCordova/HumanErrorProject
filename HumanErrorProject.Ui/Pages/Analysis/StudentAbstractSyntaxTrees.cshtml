@@ -1,0 +1,144 @@
+﻿@page "{id}/{studentId}"
+@model StudentAbstractSyntaxTreesModel
+@{
+}
+
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.Student.Name Abstract Syntax Tree Metrics
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.Assignment.Name</li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is stats on the @Model.Student.Name abstract syntax metrics
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Index"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Analysis/AbstractSyntaxTrees"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Abstract Syntax Trees
+            </a>
+            <a asp-page="/Assignments/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@{
+    var snapshots = (await Model.GetBuildSnapshots()).OrderBy(x => x.SnapshotSubmission.CreatedDateTime).ToList();
+}
+@if (snapshots.Any())
+{
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                Abstract Syntax Tree Metrics
+            </h2>
+            <p class="lead">
+                Below is metrics for each method.
+            </p>
+        </div>
+        <table class="table table-striped table-responsive-lg">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="text-center">
+                        Method
+                    </th>
+                    <th rowspan="2" class="text-center">
+                        Number of Declared
+                    </th>
+                    <th class="text-center text-success" colspan="3">
+                        Least
+                    </th>
+                    <th class="text-center text-primary" colspan="3">
+                        Latest
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-center text-success">
+                        Insertations
+                    </th>
+                    <th class="text-center text-primary">
+                        Rotations
+                    </th>
+                    <th class="text-center text-danger">
+                        Deletions
+                    </th>
+                    <th class="text-center text-success">
+                        Insertations
+                    </th>
+                    <th class="text-center text-primary">
+                        Rotations
+                    </th>
+                    <th class="text-center text-danger">
+                        Deletions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var method in Model.Assignment.Solution.MethodDeclarations)
+                {
+                    <tr>
+                        <td class="text-lowercase text-center">
+                            @method.PreprocessorDirective
+                        </td>
+                        @{
+                            var count = snapshots.Count(x => Model.GetSnapshotMethod(x, method).Declared);
+                            var least = Model.GetLeastCodeAnalysisMetricOrDefault(snapshots, method);
+                            var latest = Model.GetLatestCodeAnalysisMetricOrDefault(snapshots, method);
+                        }
+                        <td class="text-center">
+                            @count
+                        </td>
+                        @if (count == 0)
+                        {
+                            <td colspan="6" class="text-center">
+                                None declared.
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-center text-success">@least.Insertations</td>
+                            <td class="text-center text-primary">@least.Rotations</td>
+                            <td class="text-center text-danger">@least.Deletions</td>
+                            if (latest == null)
+                            {
+                                <td colspan="3" class="text-center">
+                                    Not Delcared
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center text-success">@latest.Insertations</td>
+                                <td class="text-center text-primary">@latest.Rotations</td>
+                                <td class="text-center text-danger">@latest.Deletions</td>
+
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

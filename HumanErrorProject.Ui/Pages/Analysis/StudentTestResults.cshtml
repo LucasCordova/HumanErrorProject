@@ -1,0 +1,111 @@
+﻿@page "{id}/{studentId}"
+@using Data.Models
+@model StudentTestResultsModel
+@{
+}
+
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.Student.Name Test Results
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.Assignment.Name</li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is stats on the @Model.Student.Name test results and progress
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Index"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Analysis/TestResults"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Test Results
+            </a>
+            <a asp-page="/Assignments/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@await Component.InvokeAsync("AssignmentTestResultsProgress", Model.Snapshots)
+@{
+    var snapshots = (await Model.GetBuildSnapshots()).OrderBy(x => x.SnapshotSubmission.CreatedDateTime).ToList();
+}
+@if (snapshots.Any())
+{
+    @await Component.InvokeAsync("AssignmentStudentSnapshotsTestResults", snapshots)
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                Test Results
+            </h2>
+            <p class="lead">
+                Below is if the student has past and if their last snapshot past it.
+            </p>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="text-center">Category</th>
+                <th class="text-center">Test Name</th>
+                <th class="text-center">Has Past</th>
+                <th class="text-center">Latest</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var test in Model.Assignment.TestProject.UnitTests.OrderBy(x => x.Category))
+            {
+                <tr>
+                    <td class="text-center">
+                        @test.Category
+                    </td>
+                    <td class="text-center">@test.Name</td>
+                    <td class="text-success text-center">
+                        @snapshots.Select(x => ((SnapshotSuccessReport)x.Report).UnitTestResults.First(y => y.UnitTestId.Equals(test.Id))).Any(x => x.Passed)
+                    </td>
+                    <td class="text-center">
+                        @if (snapshots.Last().Report.Type == SnapshotReport.SnapshotReportTypes.Failure)
+                        {
+                            <span class="text-danger">
+                                No
+                            </span>
+                        }
+                        else if (((SnapshotSuccessReport)snapshots.Last().Report).UnitTestResults.First(y => y.UnitTestId.Equals(test.Id)).Passed)
+                        {
+                            <span class="text-primary">
+                                Yes
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">
+                                No
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,81 @@
+﻿@page "{step?}"
+@model StudentModel
+@{
+}
+
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Your Assignments
+        </h1>
+        <p class="lead">
+            Your assignments from each class you're in.
+        </p>
+    </div>
+</div>
+<div class="container mt-5">
+    <div class="row text-center">
+        @foreach (var asssignment in await Model.GetAssignments())
+        {
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        @asssignment.Solution.Name
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            @asssignment.Name
+                        </h1>
+                        <ul class="list-unstyled">
+                            <li>
+                                @asssignment.Filename
+                            </li>
+                            <li>
+                                @asssignment.CourseClass.Name
+                            </li>
+                            <li>
+                                @asssignment.CourseClass.Term
+                            </li>
+                            <li>
+                                @asssignment.CourseClass.Course
+                            </li>
+                        </ul>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Assignments/Progress"
+                               asp-route-id="@asssignment.Id"
+                               role="button">
+                                Progress
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (await Model.IsPrevious())
+            {
+                <a asp-page="/Assignments/Student"
+                   asp-route-step="@(Model.Step - 1)">
+                    <i class="fas fa-arrow-left"></i>
+                    Previous
+                </a>
+            }
+        </div>
+        <div>
+            @if (await Model.IsNext())
+            {
+                <a asp-page="/Assignments/Student"
+                   asp-route-id="@(Model.Step + 1)">
+                    Next
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>

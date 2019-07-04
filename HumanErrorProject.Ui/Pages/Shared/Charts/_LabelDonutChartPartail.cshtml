@@ -1,0 +1,87 @@
+﻿@using Newtonsoft.Json
+@model DataVisuals.LabelDonutChart
+
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var values = model.Values;
+    var colors = model.Colors;
+    var labels = model.Labels;
+
+    var $container = $(id),
+        margin = 20,
+        width = $container.width(),
+        height = $container.height(),
+        min = Math.min(width, height),
+        radius = min / 2 - margin, 
+        fontSize = min / 20;
+
+    var arc = d3.arc()
+        .innerRadius(radius * 0.5)
+        .outerRadius(radius * 0.8);
+
+    var outerArc = d3.arc()
+        .innerRadius(radius * 0.9)
+        .outerRadius(radius * 0.9);
+
+    var svg = d3.select(id)
+        .append("svg")
+        .attr("width", '100%')
+        .attr("height", '100%')
+        .attr('viewBox', '0 0 ' + width + ' ' + height)
+        .attr('preserveAspectRatio', 'xMidYMax meet')
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var pie = d3.pie()
+        .padAngle(0.005)
+        .sort(null)
+        .value(function (d) { return d.value; });
+
+    var data = pie(d3.entries(values));
+
+    svg.selectAll('.slices')
+        .data(data)
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', function (d, i) {
+            return colors[i];
+        });
+
+    svg.selectAll('.lines')
+        .data(data)
+        .enter()
+        .append('polyline')
+        .attr('stroke', 'black')
+        .style('fill', 'none')
+        .attr('stroke-width', '0.02em')
+        .attr('points', function(d) {
+            var posA = arc.centroid(d);
+            var posB = outerArc.centroid(d);
+            var posC = outerArc.centroid(d);
+            var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+            posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1);
+            return [posA, posB, posC];
+        });
+
+    svg.selectAll('allLabels')
+        .data(data)
+        .enter()
+        .append('text')
+        .style('font-size', fontSize + 'px')
+        .text(function(d, i) { return labels[i]; })
+        .attr('transform',
+            function(d) {
+                var pos = outerArc.centroid(d);
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+                pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+                return 'translate(' + pos + ')';
+            })
+        .style('text-anchor',
+            function(d) {
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+                return (midangle < Math.PI ? 'start' : 'end');
+            });
+
+</script>

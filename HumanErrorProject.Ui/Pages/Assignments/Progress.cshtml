@@ -1,0 +1,68 @@
+﻿@page "{id}"
+@model ProgressModel
+@{
+}
+
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.Assignment.Name
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                @Model.Assignment.Filename
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.Solution.Name
+            </li>
+        </ul>
+    </div>
+</div>
+@if (Model.Snapshots.Count > 0)
+{
+    @await Component.InvokeAsync("AssignmentTestResultsProgress", Model.Snapshots)
+    <div class="container mt-5">
+        <div class="mx-auto text-center">
+            Your Latests Snapshot
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row text-center">
+            @foreach (var snapshot in Model.Snapshots.Take(3))
+            {
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            @await Html.PartialAsync("Shared/_SnapshotReportTypePartial", snapshot)
+                        </div>
+                        <div class="card-body">
+                            <h1 class="card-title">
+                                @snapshot.Assignment.Name
+                            </h1>
+                            <ul class="list-unstyled">
+                                <li>
+                                    @snapshot.SnapshotSubmission.CreatedDateTime.ToString("dd MMMM yyyy")
+                                </li>
+                            </ul>
+                            <div class="btn-group">
+                                <a class="btn btn-primary text-light"
+                                   asp-page="/Snapshots/Details"
+                                   asp-route-id="@snapshot.Id"
+                                   role="button">
+                                    Details
+                                </a>
+                                <a class="btn btn-primary text-light"
+                                   asp-page="/Surveys/Details"
+                                   asp-route-id="@snapshot.SurveyId"
+                                   role="button">
+                                    Survey
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

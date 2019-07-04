@@ -1,0 +1,18 @@
+﻿@using HumanErrorProject.Data.Models
+@model HumanErrorProject.Data.Models.SurveyQuestion
+
+@switch (Model.Type)
+{
+    case SurveyQuestion.SurveyQuestionTypes.Qualitative:
+        <span>
+            @Model.TypeValue()
+        </span>
+        break;
+    case SurveyQuestion.SurveyQuestionTypes.Rate:
+        <span class="text-info">
+            @Model.TypeValue()
+        </span>
+        break;
+    default:
+        throw new ArgumentOutOfRangeException();
+}

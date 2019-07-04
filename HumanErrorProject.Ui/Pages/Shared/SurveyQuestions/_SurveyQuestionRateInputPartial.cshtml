@@ -1,0 +1,70 @@
+﻿@using HumanErrorProject.Data.Models
+@model SurveyQuestionRate
+
+<div class="form-group">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">
+                Category
+            </span>
+        </div>
+        <input asp-for="Category" class="form-control"
+               placeholder="Category" />
+    </div>
+    <span asp-validation-for="Category" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">
+                Example
+            </span>
+        </div>
+        <input asp-for="Example" class="form-control"
+               placeholder="Example" />
+    </div>
+    <span asp-validation-for="Example" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">
+                <label asp-for="Explaination">
+                </label>
+            </span>
+        </div>
+        <textarea asp-for="Explaination" class="form-control"></textarea>
+    </div>
+    <span asp-validation-for="Explaination" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Category">
+    </label>
+    <span class="float-right">
+        <output id="rangeOutput">
+            @if (Model.Range < 2)
+            {
+                @:2
+            }
+            else
+            {
+                @Model.Range
+            }
+        </output>
+    </span>
+    <input asp-for="Range" type="range"
+           class="custom-range"
+           min="2" max="10" step="1" id="rangeInput"
+           oninput="rangeOutput.value = rangeInput.value" />
+</div>
+<div class="form-group">
+    <div class="form-check-inline">
+        <div class="form-check-input">
+            <input type="checkbox" asp-for="Required" />
+        </div>
+        <div class="form-check-label">
+            Required
+        </div>
+    </div>
+    <span asp-validation-for="Required" class="text-danger"></span>
+</div>

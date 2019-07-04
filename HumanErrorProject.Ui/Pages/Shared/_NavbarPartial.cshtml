@@ -1,0 +1,34 @@
+﻿@using Constants
+@if (User.Identity.IsAuthenticated)
+{
+    <ul class="nav navbar-nav">
+        @if (User.IsInRole(IdentityRoleConstants.Student))
+        {
+            <li class="nav-item">
+                <a class="nav-link" href="~/Snapshots/">Snapshots</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Surveys/All">
+                    Surveys
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Assignments/Student">
+                    Assignments
+                </a>
+            </li>
+        }
+        else if (User.IsInRole(IdentityRoleConstants.Admin))
+        {
+            <li class="nav-item">
+                <a class="nav-link" href="~/CourseClasses/">Classes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Students/">Students</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Questions/">Questions</a>
+            </li>
+        }
+    </ul>
+}

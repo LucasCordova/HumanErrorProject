@@ -1,0 +1,44 @@
+﻿@page "{id}"
+@model EditModel
+@{
+}
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-5">
+            <form method="post">
+                <h1 class="font-weight-bold">Edit Assignment</h1>
+                <a asp-page="/Assignments/Index"
+                   asp-route-id="@Model.Assignment.CourseClassId"
+                   class="text-primary">
+                    Back to list
+                </a>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group mt-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Name
+                            </span>
+                        </div>
+                        <input asp-for="Assignment.Name" class="form-control"
+                               placeholder="Assignment's Name" />
+                    </div>
+                    <span asp-validation-for="Assignment.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Human Error Assessment Tool</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/fontawesome/dist/css/all.css" />
+        <script src="~/lib/d3/d3.min.js"></script>
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+              asp-fallback-href="~/lib/fontawesome/dist/css/all.css" />
+        <script src="https://d3js.org/d3.v5.min.js"
+                asp-fallback-src="~/lib/d3/d3.min.js"></script>
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <a class="navbar-brand" asp-page="/Index">Human Error Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_list">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar_list">
+            <ul class="nav navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarInfo" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Info
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" asp-page="/Info/Instructions">Instructions</a>
+                        <a class="dropdown-item" asp-page="/Info/People">Who are we?</a>
+                    </div>
+                </li>
+            </ul>
+            <partial name="_NavbarPartial"/>
+            <ul class="navbar-nav mr-auto"></ul>
+            @RenderSection("Navbar", required: false)
+
+            <partial name="_LoginPartial"/>
+        </div>
+    </nav>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/popper/dist/popper.min.js"></script>
+        <script src="~/lib/fontawesome/dist/js/fontawesome.js"></script>
+        <script src="~/lib/fontawesome/dist/js/solid.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+                asp-fallback-src="~/lib/popper/dist/popper.min.js"></script>
+        <script src=https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        <script src="https://use.fontawesome.com/releases/v5.8.2/js/solid.js"
+                asp-fallback-src="~/lib/fontawesome/dist/js/solid.js"></script>
+        <script src="https://use.fontawesome.com/releases/v5.8.2/js/fontawesome.js"
+                asp-fallback-src="~/lib/fontawesome/dist/js/fontawesome.js"></script>
+    </environment>
+
+    <div class="container-fluid my-5">
+        @RenderBody()
+    </div>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

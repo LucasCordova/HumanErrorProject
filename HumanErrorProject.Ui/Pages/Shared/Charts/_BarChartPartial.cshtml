@@ -1,0 +1,53 @@
+﻿@using Newtonsoft.Json
+@model DataVisuals.BarChart
+
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var values = model.Values;
+    var colors = model.Colors;
+    var labels = model.Labels;
+    var minimum = model.Minimum;
+
+    var $container = $(id),
+        margin = { top: 30, right: 30, bottom: 30, left: 40 },
+        width = $container.width() - margin.left - margin.right,
+        height = $container.height() - margin.top - margin.bottom;
+
+    var x = d3.scaleBand()
+        .range([0, width])
+        .domain(labels)
+        .padding(0.1);
+
+    var y = d3.scaleLinear()
+        .domain([minimum, d3.max(values)])
+        .range([height, 0]);
+
+    var svg = d3.select(id)
+        .append('svg')
+        .attr('width', width + margin.left + margin.right + 'px')
+        .attr('height', height + margin.top + margin.bottom + 'px')
+        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+        .attr('preserveAspectRatio', 'xMidYMax meet')
+        .append('g')
+        .attr('transform',
+            'translate(' + margin.left + ',' + margin.top + ')');
+
+    var data = d3.entries(values);
+
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+    svg.append("g")
+        .call(d3.axisLeft(y));;
+
+    svg.selectAll('.bar')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr("x", function(d,i) { return x(labels[i]); })
+        .attr("width", x.bandwidth())
+        .attr("y", function(d,i) { return y(values[i]); })
+        .attr("height", function (d, i) { return height - y(values[i]); })
+        .attr('fill', function (d, i) { return colors[i]; });
+</script>

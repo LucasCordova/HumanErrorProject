@@ -1,0 +1,70 @@
+﻿@page "{id}"
+@using Data.Models
+@model SubmitModel
+@{
+}
+
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Fill out Survey
+        </h1>
+        <p class="lead">
+            Before answering the questions, first review your snapshots.
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Surveys/Details"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary text-white"
+               role="button">
+                Back to Snapshots
+            </a>
+        </div>
+    </div>
+</div>
+<form method="post">
+    @for (var index = 0; index < Model.SurveyResponses.Count; index++)
+    {
+        switch (Model.SurveyResponses[index].Question.Type)
+        {
+            case SurveyQuestion.SurveyQuestionTypes.Qualitative:
+                @await Html.PartialAsync("Shared/SurveyResponses/_SurveyResponseQualitativeInputPartial",
+                    Model.SurveyResponses[index],
+                    new ViewDataDictionary(ViewData)
+                    {
+                        TemplateInfo =
+                        {
+                            HtmlFieldPrefix = $"SurveyResponses[{index}]"
+                        }
+                    })
+                break;
+            case SurveyQuestion.SurveyQuestionTypes.Rate:
+                @await Html.PartialAsync("Shared/SurveyResponses/_SurveyResponseRateInputPartial",
+                    Model.SurveyResponses[index],
+                    new ViewDataDictionary(ViewData)
+                    {
+                        TemplateInfo =
+                        {
+                            HtmlFieldPrefix = $"SurveyResponses[{index}]"
+                        }
+                    })
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    <div class="container my-5 bg-light pt-3 pb-5 px-5 text-center shadow-sm">
+        <h2 class="display-2">
+            Finished ?
+        </h2>
+        <p class="lead">
+            Make sure to double and triple check.
+        </p>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                Submit
+            </button>
+        </div>
+    </div>
+</form>

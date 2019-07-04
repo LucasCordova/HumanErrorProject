@@ -1,0 +1,25 @@
+﻿@model HumanErrorProject.Data.Models.SurveyQuestionQualitative
+
+<div class="form-group">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">
+                Prompt
+            </span>
+        </div>
+        <input asp-for="Prompt" class="form-control"
+               placeholder="Prompt" />
+    </div>
+    <span asp-validation-for="Prompt" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <div class="form-check-inline">
+        <div class="form-check-input">
+            <input type="checkbox" asp-for="Required" />
+        </div>
+        <div class="form-check-label">
+            Required
+        </div>
+    </div>
+    <span asp-validation-for="Required" class="text-danger"></span>
+</div>

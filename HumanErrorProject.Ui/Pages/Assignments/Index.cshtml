@@ -1,0 +1,99 @@
+﻿@page "{id}/{step?}"
+@model IndexModel
+@{
+}
+
+@section Navbar
+{
+    <partial name="_CourseClassNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.CourseClass.Name
+        </h1>
+        <p class="lead">
+            Your assignments are below
+        </p>
+        <a asp-page="/Assignments/Create" 
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">Create an Assignment</a>
+    </div>
+</div>
+<div class="container mt-5">
+    <div class="row text-center">
+        @foreach (var assignment in await Model.GetAssignments())
+        {
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        @assignment.Solution.Name
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            @assignment.Name
+                        </h1>
+                        <ul class="list-unstyled">
+                            <li>
+                                @assignment.Filename
+                            </li>
+                            <li>
+                                @assignment.TestProject.UnitTests.Count Unit Tests
+                            </li>
+                            <li>
+                                @assignment.Solution.MethodDeclarations.Count Methods
+                            </li>
+                        </ul>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Assignments/Details"
+                               asp-route-id="@assignment.Id"
+                               role="button">
+                                Details
+                            </a>
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Assignments/Edit"
+                               asp-route-id="@assignment.Id"
+                               role="button">
+                                Edit
+                            </a>
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Assignments/Delete"
+                               asp-route-id="@assignment.Id"
+                               role="button">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (await Model.IsPrevious())
+            {
+                <a asp-page="/Assignments/Index"
+                   asp-route-id="@Model.Id"
+                   asp-route-step="@(Model.Step - 1)">
+                    <i class="fas fa-arrow-left"></i>
+                    Previous
+                </a>
+            }
+        </div>
+        <div>
+            @if (await Model.IsNext())
+            {
+                <a asp-page="/Assignments/Index"
+                   asp-route-id="@Model.Id"
+                   asp-route-step="@(Model.Step + 1)">
+                    Next
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>

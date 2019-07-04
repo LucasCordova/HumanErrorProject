@@ -1,0 +1,22 @@
+﻿@using Data.Models
+@model Data.Models.Snapshot
+
+<div class="container my-5 bg-light pt-3 pb-5 px-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h2 class="display-4 text-danger">
+            Error Occured
+        </h2>
+    </div>
+    <p class="lead">
+        Output:
+    </p>
+    <div class="bg-dark p-2">
+        @foreach (var text in ((SnapshotFailureReport)Model.Report).Report.Split('\n'))
+        {
+            <code>
+                @text
+            </code>
+            <br/>
+        }
+    </div>
+</div>

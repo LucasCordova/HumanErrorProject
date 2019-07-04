@@ -1,0 +1,81 @@
+﻿@model HumanErrorProject.Data.Models.PreAssignment
+
+
+<div class="container my-5 bg-light pt-3 pb-5 px-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h2 class="display-4">
+            Success!
+        </h2>
+        <p>
+            The assignment went successfully through the engine.
+        </p>
+    </div>
+</div>
+
+<div class="container my-5 bg-dark pt-3 pb-5 px-5 shadow-sm">
+    <div class="mx-auto text-center text-white">
+        <h2 class="display-2">
+            Method Declarations
+        </h2>
+    </div>
+    <table class="table table-striped table-light">
+        <tbody>
+            @foreach (var method in Model.Solution.MethodDeclarations)
+            {
+                <tr>
+                    <td class="align-middle">
+                        @method.AstType
+                    </td>
+                    <td class="align-middle">
+                        @method.PreprocessorDirective
+                    </td>
+                    <td class="align-middle">
+                        @method.AstMethodRegexExpression
+                    </td>
+                    <td class="align-middle">
+                        @method.AstMethodParameterRegexExpression
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="container my-5 bg-light pt-3 pb-5 px-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h2 class="display-2">
+            Unit Tests
+        </h2>
+    </div>
+    <table class="table table-striped table-dark">
+        <tbody>
+            @foreach (var unitTest in Model.TestProject.UnitTests.OrderBy(t => t.Category))
+            {
+                <tr>
+                    <td>
+                        @unitTest.Category
+                    </td>
+                    <td>
+                        @unitTest.Name
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="container my-5 bg-light pt-3 pb-5 pb-5 px-5 shadow-sm">
+    <h2 class="display-2">
+        Submit Assignment
+    </h2>
+    <p class="lead">
+        Make sure it's what you want.
+    </p>
+    <form method="post">
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                Create
+            </button>
+        </div>
+    </form>
+</div>

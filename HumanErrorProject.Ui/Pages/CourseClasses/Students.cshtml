@@ -1,0 +1,86 @@
+﻿@page "{id}"
+@model StudentsModel
+@{
+}
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.CourseClass.Name
+        </h1>
+        <p class="lead">
+            Add and Remove Students Below
+        </p>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-6 text-center">
+            <h6>
+                Add Students
+            </h6>
+        </div>
+        <div class="col-6 text-center">
+            <h6>
+                Remove Students
+            </h6>
+        </div>
+    </div>
+    <hr />
+    @foreach (var student in await Model.GetStudents())
+    {
+        <div class="row">
+            @if (await Model.IsStudentInClass(student))
+            {
+                <div class="col-5 text-center"></div>
+                <div class="col-1 text-center"></div>
+                <div class="col-1 d-flex">
+                    <div class="align-self-center">
+                        <form method="post" asp-page-handler="RemoveStudent">
+                            <input name="studentId" value="@student.Id" type="hidden"/>
+                            <button type="submit" class="btn btn-link">
+                                <i class="fas fa-angle-double-left fa-2x text-danger"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-5 text-center">
+                    <p class="lead">
+                        @student.Name
+                    </p>
+                    <p class="lead">
+                        @student.Email
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="col-5 text-center">
+                    <p class="lead">
+                        @student.Name
+                    </p>
+                    <p class="lead">
+                        @student.Email
+                    </p>
+                </div>
+                <div class="col-1 d-flex">
+                    <div class="align-self-center">
+                        <form method="post" asp-page-handler="AddStudent" >
+                            <input name="studentId" value="@student.Id" type="hidden"/>
+                            <button type="submit" class="btn btn-link">
+                                <i class="fas fa-angle-double-right fa-2x text-success"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-1 text-center"></div>
+                <div class="col-5 text-center"></div>
+            }
+        </div>
+    }
+</div>

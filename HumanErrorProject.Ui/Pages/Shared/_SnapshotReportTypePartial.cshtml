@@ -1,0 +1,18 @@
+﻿@using Data.Models
+@model Data.Models.Snapshot
+
+@switch (Model.Report.Type)
+{
+    case SnapshotReport.SnapshotReportTypes.Success:
+        <span class="text-success">
+            @Model.Report.TypeValue()
+        </span>
+        break;
+    case SnapshotReport.SnapshotReportTypes.Failure:
+        <span class="text-danger">
+            @Model.Report.TypeValue()
+        </span>
+        break;
+    default:
+        throw new ArgumentOutOfRangeException();
+}
