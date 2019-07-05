@@ -1,0 +1,131 @@
+﻿@page "{id}"
+@using Data.Models
+@model MethodDeclarationsModel
+@{
+}
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Method Declarations
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                @Model.Assignment.Name
+            </li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is students progress on method declarations
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Index" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Analysis/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@if (Model.LatestSnapshots.Count > 0)
+{
+    var chart = Model.GetOverallMethodDeclarationChart();
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                Overall Method Declaration Stats
+            </h2>
+        </div>
+        <div class="row justify-content-center align-items-center ">
+            <div id="@chart.Id" class="mh-100px h-300px mw-300px">
+            </div>
+        </div>
+    </div>
+    @(await Html.PartialAsync("Shared/Charts/_BarChartPartial", chart))
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                Method Declarations
+            </h2>
+            <p class="lead">
+                Below is the number of students are are declaring each tests.
+            </p>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="text-center">
+                    Name
+                </th>
+                <th class="text-center">
+                    Number of Students Declared
+                </th>
+                <th class="text-center">
+                    Number of Students Not Declared
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var method in Model.Assignment.Solution.MethodDeclarations)
+            {
+                <tr>
+                    <td class="text-center text-lowercase">
+                        @method.PreprocessorDirective
+                    </td>
+                    <td class="text-center">
+                        @Model.LatestSnapshots.Count(x => ((SnapshotSuccessReport)x.Report).SnapshotMethods.First(y => y.MethodDeclarationId.Equals(method.Id)).Declared)
+                    </td>
+                    <td class="text-center">
+                        @Model.LatestSnapshots.Count(x => !((SnapshotSuccessReport)x.Report).SnapshotMethods.First(y => y.MethodDeclarationId.Equals(method.Id)).Declared)
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <h4 class="display-4">
+            Students
+        </h4>
+        <p class="lead">
+            View method declarations for individual students
+        </p>
+        <form method="post">
+            <div class="form-group">
+                <div class="input-group">
+                    <select class="custom-select" name="studentId" asp-items="ViewBag.Students"></select>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary">Select</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+else
+{
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                No Successful Snapshots
+            </h2>
+            <p class="lead">
+                Your students need help!
+            </p>
+        </div>
+    </div>
+}
