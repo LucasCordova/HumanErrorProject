@@ -1,0 +1,70 @@
+﻿@using Newtonsoft.Json
+@model DataVisuals.BoxAndWhiskerChart
+
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var color = model.Color;
+    var values = model.Values;
+
+    var $container = $(id),
+        margin = { top: 30, right: 30, bottom: 30, left: 40 },
+        width = $container.width() - margin.left - margin.right,
+        height = $container.height() - margin.top - margin.bottom;
+
+    var svg = d3.select(id)
+        .append('svg')
+        .attr('width', width + margin.left + margin.right + 'px')
+        .attr('height', height + margin.top + margin.bottom + 'px')
+        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+        .attr('preserveAspectRatio', 'xMidYMax meet')
+        .append('g')
+        .attr('transform',
+            'translate(' + margin.left + ',' + margin.top + ')');
+
+    var data = values.sort(d3.ascending);
+
+    var q1 = d3.quantile(data, .25);
+    var median = d3.quantile(data, .5);
+    var q3 = d3.quantile(data, .75);
+    var interQuantileRange = q3 - q1;
+    var min = data[0];
+    var max = data[data.length - 1];
+
+    var y = d3.scaleLinear()
+        .domain([0, d3.max(values)])
+        .range([height, 0]);
+
+    svg.append('g').call(d3.axisLeft(y));
+
+    var center = width / 2;
+    var boxWidth = 100;
+
+    svg.append('line')
+        .attr('x1', center)
+        .attr('x2', center)
+        .attr('y1', y(min))
+        .attr('y2', y(max))
+        .attr('stroke', 'black');
+
+    svg.append('rect')
+        .attr('x', center - boxWidth / 2)
+        .attr('y', y(q3))
+        .attr('height', (y(q1) - y(q3)))
+        .attr('width', boxWidth)
+        .attr('stroke', 'black')
+        .style('fill', color);
+
+    svg
+        .selectAll('toto')
+        .data([min, median, max])
+        .enter()
+        .append('line')
+        .attr('x1', center - boxWidth / 2)
+        .attr('x2', center + boxWidth / 2)
+        .attr('y1', function(d) { return(y(d)) })
+        .attr('y2', function(d) { return(y(d)) })
+        .attr('stroke', 'black');
+
+
+</script>

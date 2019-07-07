@@ -1,4 +1,123 @@
-﻿@page
+﻿@page "{id}"
+@using Data.Models
+@using Microsoft.EntityFrameworkCore
 @model SurveysModel
 @{
+}
+
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Surveys
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                @Model.Assignment.Name
+            </li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is stats on how students are answering the surveys.
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Index" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Analysis/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@if (Model.Surveys.Count > 0)
+{
+    var chart = Model.GetOverallSurveyChart();
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                Overall Surveys
+            </h2>
+            <p class="lead">
+                Below is the percentage of completed surveys for this assignment.
+            </p>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div id="@chart.Id" class="mh-100px h-300px mw-100px">
+            </div>
+        </div>
+    </div>
+    @(await Html.PartialAsync("Shared/Charts/_DonutChartPartial", chart))
+    foreach (var question in (await Model.SurveyQuestions.ToListAsync()).Where(x => x.Type == SurveyQuestion.SurveyQuestionTypes.Rate))
+    {
+        var answers = Model.GetSurveyAnswers(question);
+        <div class="container my-3 bg-light py-3 px-5 shadow-sm">
+            <div class="mx-auto text-center">
+                <h3 class="display-4">
+                    @await Html.PartialAsync("Shared/_QuestionTypePartial", question)
+                </h3>
+            </div>
+            @await Component.InvokeAsync("SurveyQuestionDisplay", question)
+            <div class="row justify-content-center align-items-center">
+                @if (answers.Any())
+                {
+                    var boxAndWhiskerChart = Model.GetBoxAndWhiskerChart((SurveyQuestionRate)question,
+                        answers.Cast<SurveyAnswerRate>().ToList());
+                    <div id="@boxAndWhiskerChart.Id" class="mh-100px h-300px mw-300px"></div>
+                    @await Html.PartialAsync("Shared/Charts/_BoxAndWhiskerChartPartial", boxAndWhiskerChart)
+                }
+                else
+                {
+                    <p class="lead text-danger">
+                        No answers provided
+                    </p>
+                }
+            </div>
+        </div>
+    }
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <h4 class="display-4">
+            Students
+        </h4>
+        <p class="lead">
+            View method declarations for individual students
+        </p>
+        <form method="post">
+            <div class="form-group">
+                <div class="input-group">
+                    <select class="custom-select" name="studentId" asp-items="ViewBag.Students"></select>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary">Select</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+else
+{
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                No Successful Snapshots
+            </h2>
+            <p class="lead">
+                Your students need help!
+            </p>
+        </div>
+    </div>
 }

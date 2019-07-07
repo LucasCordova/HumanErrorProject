@@ -15,24 +15,28 @@ using Microsoft.EntityFrameworkCore;
 namespace HumanErrorProject.Ui.Pages.Analysis
 {
     [Authorize(Roles = IdentityRoleConstants.Admin)]
-    public class SurveysModel : PageModel
+    public class StudentSurveysModel : PageModel
     {
         public HumanErrorProjectContext Context;
         public DbSet<Assignment> Assignments;
         public DbSet<SurveyQuestion> SurveyQuestions;
 
-        public SurveysModel(HumanErrorProjectContext context)
+        public StudentSurveysModel(HumanErrorProjectContext context)
         {
             Context = context;
             Assignments = context.Set<Assignment>();
             SurveyQuestions = context.Set<SurveyQuestion>();
         }
 
-
         [FromRoute]
         public int Id { get; set; }
 
+        [FromRoute]
+        public int StudentId { get; set; }
+
         public Assignment Assignment { get; set; }
+
+        public Student Student { get; set; }
 
         public IList<Survey> Surveys { get; set; } = new List<Survey>();
 
@@ -53,7 +57,12 @@ namespace HumanErrorProject.Ui.Pages.Analysis
                 Context.Entry(x.Survey).Collection(y => y.SurveyResponses).Query()
                     .Include(y => y.Answer).Include(y => y.Question).Load();
                 return x.Survey;
-            }).ToList();
+            }).Where(x => x.StudentId.Equals(StudentId)).ToList();
+
+            if (Surveys.Count == 0) return NotFound();
+
+            Student = Surveys.First().Student;
+
 
 
             var students = Surveys.Select(x => x.Student).Distinct();
@@ -67,6 +76,15 @@ namespace HumanErrorProject.Ui.Pages.Analysis
                 .SelectMany(x => x.SurveyResponses)
                 .Where(x => x.SurveyQuestionId.Equals(question.Id))
                 .Select(x => x.Answer).ToList();
+        }
+
+        public SurveyAnswer GetLatestSurveyAnswerOrDefult(SurveyQuestion question)
+        {
+            return Surveys.OrderBy(x => x.PostedTime)
+                .Where(x => x.IsCompleted).OrderByDescending(x => x.PostedTime)
+                .FirstOrDefault()?.SurveyResponses
+                .FirstOrDefault(x => x.SurveyQuestionId.Equals(question.Id))
+                ?.Answer;
         }
 
         public DonutChart GetOverallSurveyChart()
@@ -99,12 +117,5 @@ namespace HumanErrorProject.Ui.Pages.Analysis
                 Values = answers.Select(x => x.Selection).ToList()
             };
         }
-
-        public IActionResult OnPost(int studentId)
-        {
-            return RedirectToPage("/Analysis/StudentSurveys",
-                new { id = Id, studentId });
-        }
-
     }
 }
