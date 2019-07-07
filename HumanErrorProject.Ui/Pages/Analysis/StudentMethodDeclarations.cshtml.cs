@@ -82,21 +82,18 @@ namespace HumanErrorProject.Ui.Pages.Analysis
                 Minimum = 0,
                 Colors = new List<string>()
                 {
-                    DataVisualConstants.FailedColor,
                     DataVisualConstants.PassedColor,
                     DataVisualConstants.PrimaryColor
                 },
                 Labels = new List<string>()
                 {
-                    "Worst",
                     "Best",
-                    "Average"
+                    "Latest"
                 },
                 Values = new List<int>()
                 {
-                    snapshots.Select(x => ((SnapshotSuccessReport)x.Report).SnapshotMethods.Count(y => y.Declared)).Min(),
                     snapshots.Select(x => ((SnapshotSuccessReport)x.Report).SnapshotMethods.Count(y => y.Declared)).Max(),
-                    (int)snapshots.Select(x => ((SnapshotSuccessReport)x.Report).SnapshotMethods.Count(y => y.Declared)).Average(),
+                    ((SnapshotSuccessReport)snapshots.Last().Report).SnapshotMethods.Count(y => y.Declared),
                 }
             };
         }
