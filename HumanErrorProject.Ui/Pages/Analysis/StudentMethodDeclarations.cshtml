@@ -1,0 +1,121 @@
+﻿@page "{id}/{studentId}"
+@using Data.Models
+@model StudentMethodDeclarationsModel
+@{
+}
+
+@section Navbar
+{
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.Student.Name Method Declarations
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.Assignment.Name</li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is stats on the @Model.Student.Name method declarations and progress
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Index"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Analysis/MethodDeclarations"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Method Declarations
+            </a>
+            <a asp-page="/Assignments/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@await Component.InvokeAsync("AssignmentMethodDeclarationsProgress", Model.Snapshots)
+@{
+    var snapshots = (await Model.GetBuildSnapshots()).OrderBy(x => x.SnapshotSubmission.CreatedDateTime).ToList();
+    var overallChart = Model.GetOverallMethodDeclarationsChart(snapshots);
+}
+<div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h2 class="display-4">
+            Overall Method Declaration Stats
+        </h2>
+    </div>
+    <div class="row justify-content-center align-items-center">
+        <div id="@overallChart.Id" class="mh-100px h-300px mw-300px"></div>
+    </div>
+</div>
+@(await Html.PartialAsync("Shared/Charts/_BarChartPartial", overallChart))
+<div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h2 class="display-4">
+            Method Declarations
+        </h2>
+        <p class="lead">
+            Below is if the student has declared and if their last snapshot declared it. 
+        </p>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th class="text-center">
+                Name
+            </th>
+            <th class="text-center">
+                Has Declared
+            </th>
+            <th class="text-center">
+                Declared in Last Snapshot
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var method in Model.Assignment.Solution.MethodDeclarations)
+        {
+            <tr>
+                <td class="text-center text-lowercase">
+                    @method.PreprocessorDirective
+                </td>
+                <td class="text-success text-center">
+                    @snapshots.Select(x => ((SnapshotSuccessReport)x.Report).SnapshotMethods.First(y => y.MethodDeclarationId.Equals(method.Id))).Any(x => x.Declared)
+                </td>
+                <td class="text-center">
+                    @if (snapshots.Last().Report.Type == SnapshotReport.SnapshotReportTypes.Failure)
+                    {
+                        <span class="text-danger">
+                            No
+                        </span>
+                    }
+                    else if (((SnapshotSuccessReport) snapshots.Last().Report).SnapshotMethods.First(y => y.MethodDeclarationId.Equals(method.Id)).Declared)
+                    {
+                        <span class="text-primary">
+                            Yes
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">
+                            No
+                        </span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
