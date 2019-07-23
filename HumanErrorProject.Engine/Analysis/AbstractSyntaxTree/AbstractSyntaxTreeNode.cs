@@ -30,6 +30,12 @@ namespace HumanErrorProject.Engine.Analysis.AbstractSyntaxTree
             Value = value;
         }
 
+
+        public int NumberOfNodes()
+        {
+            return 1 + Children.Aggregate(0, (i, node) => i + node.NumberOfNodes());
+        }
+
         private void UpdateMembers()
         {
             Height = ComputeHeight(Children);

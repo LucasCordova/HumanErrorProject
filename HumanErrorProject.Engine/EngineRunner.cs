@@ -21,27 +21,37 @@ namespace HumanErrorProject.Engine
         protected IRepository<Survey, string> SurveyRepository { get; }
         protected ISnapshotGenerator SnapshotGenerator { get; }
         protected IAssignmentGenerator AssignmentGenerator { get; }
+        protected IMarkovModelGenerator MarkovModelGenerator { get; }
 
         public EngineRunner(IOptions<EngineRunnerOptions> options, IRepository<Student, int> studentRepository, IRepository<Survey, string> surveyRepository, ISnapshotGenerator snapshotGenerator,
-            IAssignmentGenerator assignmentGenerator)
+            IAssignmentGenerator assignmentGenerator, IMarkovModelGenerator markovModelGenerator)
         {
             StudentRepository = studentRepository;
             SurveyRepository = surveyRepository;
             SnapshotGenerator = snapshotGenerator;
             AssignmentGenerator = assignmentGenerator;
+            MarkovModelGenerator = markovModelGenerator;
             Options = options.Value;
         }
 
-        public async Task<EmailData> Run(SubmissionData data)
+        public async Task<EmailData> RunSubmission(SubmissionData data)
         {
             data.Student = await GetStudent(data);
             data.Course = await GetCourseClass(data.Student, data);
             return await GetEmailData(data);
         }
 
-        public async Task Run(PreAssignment assignment, DirectoryHandler directory)
+        public async Task RunPreAssignment(PreAssignment assignment, DirectoryHandler directory)
         {
             await AssignmentGenerator.Generate(assignment, directory);
+        }
+
+        public async Task RunMarkovModel(Assignment assignment, MarkovModelOptions options, DirectoryHandler directory)
+        {
+            var snapshots = assignment.Snapshots.ToList();
+            if (options.BuildOnly)
+                snapshots = snapshots.Where(x => x.Report.Type == SnapshotReport.SnapshotReportTypes.Success).ToList();
+            await MarkovModelGenerator.Generate(snapshots, options, directory, assignment);
         }
 
         public async Task<Student> GetStudent(SubmissionData data)

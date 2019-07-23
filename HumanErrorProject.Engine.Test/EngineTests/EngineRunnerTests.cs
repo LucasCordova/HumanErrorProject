@@ -58,7 +58,7 @@ namespace HumanErrorProject.Engine.Test.EngineTests
                 {
                     SurveyUrl = "Blank",
                 }), Students, Surveys,
-                SnapshotGenerator , new MockAssignmentGenerator());
+                SnapshotGenerator , new MockAssignmentGenerator(), new MockMarkovModelGenerator());
             Root = Path.Combine(Directory.GetCurrentDirectory(), nameof(EngineRunnerTests));
 
             Submission = new StudentSubmissionDto()
@@ -238,6 +238,15 @@ namespace HumanErrorProject.Engine.Test.EngineTests
             public Task Generate(PreAssignment assignment, DirectoryHandler handler)
             {
                 return Task.CompletedTask;
+            }
+
+        }
+
+        public class MockMarkovModelGenerator : IMarkovModelGenerator
+        {
+            public Task Generate(IList<Snapshot> snapshots, MarkovModelOptions options, DirectoryHandler handler, Assignment assignment)
+            {
+                throw new System.NotImplementedException();
             }
         }
     }

@@ -26,6 +26,36 @@ namespace HumanErrorProject.Engine.Utilities
             return node;
         }
 
+        public AbstractSyntaxTreeNode ExtractOrDefault(AbstractSyntaxTreeNode root, string name)
+        {
+            var visitor = new ClassExtractorDeclVisitor(new ClassExtractorObj(), Splitter);
+            root.PreOrder(visitor);
+
+            var classNode = GatherDeclInformationOrDefault(name, visitor.ExtractorObj, out var hashCode);
+
+            if (classNode == null) return null;
+
+            var node = GatherMethodDeclaration(classNode, visitor.ExtractorObj, hashCode);
+
+            return node;
+        }
+
+        private AbstractSyntaxTreeNode GatherDeclInformationOrDefault(string name, ClassExtractorObj obj, out string hashCode)
+        {
+            hashCode = null;
+            foreach (var node in obj.ClassTemplateDecls)
+            {
+                if (!Splitter.Split(node.Value).Any(v => v.Equals(name)) || !ContainsDefinitionData(node)) continue;
+
+                hashCode = GetClassHashCodeOrDefault(node);
+
+                if (hashCode == null) continue;
+
+                return node;
+            }
+            return null;
+        }
+
         public AbstractSyntaxTreeNode GatherMethodDeclaration(AbstractSyntaxTreeNode classNode, ClassExtractorObj obj, string hashCode)
         {
             var root = new AbstractSyntaxTreeNode("Root");

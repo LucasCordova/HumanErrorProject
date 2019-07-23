@@ -98,11 +98,12 @@ namespace HumanErrorProject.Ui
             services.AddTransient<IRepository<Student, int>, StudentRepository>();
             services.AddTransient<IRepository<PreAssignment, int>, PreAssignmentRepository>();
             services.AddTransient<IRepository<CourseClass, int>, Repository<CourseClass, int>>();
-            services.AddTransient<IRepository<Assignment, int>, Repository<Assignment, int>>();
+            services.AddTransient<IRepository<Assignment, int>, AssignmentRepository>();
             services.AddTransient<IRepository<Survey,string>, Repository<Survey, string>>();
             services.AddTransient<IRepository<SnapshotSubmission, int>, Repository<SnapshotSubmission, int>>();
             services.AddTransient<IRepository<Snapshot, int>, Repository<Snapshot, int>>();
             services.AddTransient<IRepository<SnapshotReport, int>, Repository<SnapshotReport, int>>();
+            services.AddTransient<IRepository<MarkovModel, int>, Repository<MarkovModel, int>>();
             services.AddTransient<DeleteHelper>();
         }
 
@@ -133,6 +134,8 @@ namespace HumanErrorProject.Ui
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddSingleton<IEngineLogger, EngineLogger>();
             services.AddTransient<IEngineService, EngineService>();
+            services.AddTransient<IMarkovModelCreator, MarkovModelCreator>();
+            services.AddTransient<IMarkovModelGenerator, MarkovModelGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

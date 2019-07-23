@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 using Hangfire;
 using HumanErrorProject.Data.DataAccess;
+using HumanErrorProject.Data.DataAccess.Repositories;
 using HumanErrorProject.Data.Dtos;
 using HumanErrorProject.Data.Models;
 using HumanErrorProject.Engine;
+using HumanErrorProject.Engine.Options;
 
 namespace HumanErrorProject.Ui.Services
 {
@@ -12,15 +14,17 @@ namespace HumanErrorProject.Ui.Services
     {
         public IEngine Engine { get; }
         public IRepository<PreAssignment, int> PreAssignmentRepository { get; }
+        public IRepository<Assignment, int> AssignmentRepository { get; }
 
         public static Mutex Mutex = new Mutex();
         public IHangFireJobService HangFireJobService;
 
-        public EngineService(IEngine engine, IRepository<PreAssignment, int> preAssignmentRepository, IHangFireJobService hangFireJobService)
+        public EngineService(IEngine engine, IRepository<PreAssignment, int> preAssignmentRepository, IHangFireJobService hangFireJobService, IRepository<Assignment, int> assignmentRepository)
         {
             Engine = engine;
             PreAssignmentRepository = preAssignmentRepository;
             HangFireJobService = hangFireJobService;
+            AssignmentRepository = assignmentRepository;
         }
 
 
@@ -39,6 +43,19 @@ namespace HumanErrorProject.Ui.Services
             HangFireJobService.Remove(submission.StudentName);
             Mutex.ReleaseMutex();
         }
+
+        [AutomaticRetry(Attempts = 0)]
+        public async Task RunMarkovModelImpl(int id, MarkovModelOptions options)
+        {
+            var assignment = await AssignmentRepository.Get(id);
+            await Engine.RunMarkovModel(assignment, options);
+        }
+
+        public void RunMarkovModel(int id, MarkovModelOptions options)
+        {
+            BackgroundJob.Enqueue(() => RunMarkovModelImpl(id, options));
+        }
+
 
         public void RunPreAssignment(int id)
         {

@@ -1,0 +1,14 @@
+﻿@model Data.Models.MarkovModel
+
+@if (Model.Finished)
+{
+    <span class="text-success">
+        Finished
+    </span>
+}
+else
+{
+    <span class="text-info">
+        Not Finished Yet
+    </span>
+}

@@ -1,0 +1,105 @@
+﻿@page "{id}/{step?}"
+@model IndexModel
+@{
+}
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Markov Models
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.Assignment.Name</li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            Below is your created Markov Models.
+        </p>
+        <div class="btn-group">
+            <a asp-page="/Analysis/Markov/Create"
+               class="btn btn-primary text-light"
+               asp-route-id="@Model.Id"
+               role="button">
+                Create
+            </a>
+            <a asp-page="/Analysis/Index"
+               asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Analysis List
+            </a>
+            <a asp-page="/Assignments/Details" asp-route-id="@Model.Id"
+               class="text-white btn btn-primary" role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row text-center">
+        @foreach (var markovModel in await Model.GetModels())
+        {
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        @await Html.PartialAsync("Shared/_MarkovModelFinishedPartial", markovModel)
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            @markovModel.Publish.ToString("dd MMMM yyyy")
+                        </h1>
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/Markov/Details"
+                               asp-route-id="@markovModel.Id"
+                               role="button">
+                                Details
+                            </a>
+                            <a class="btn btn-primary text-light"
+                               asp-page="/Analysis/Markov/Delete"
+                               asp-route-id="@markovModel.Id"
+                               role="button">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (await Model.IsPrevious())
+            {
+                <a asp-page="/Snapshots/Index"
+                   asp-route-step="@(Model.Step - 1)">
+                    <i class="fas fa-arrow-left"></i>
+                    Previous
+                </a>
+            }
+        </div>
+        <div>
+            @if (await Model.IsNext())
+            {
+                <a asp-page="/Snapshots/Index"
+                   asp-route-step="@(Model.Step + 1)">
+                    Next
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>
