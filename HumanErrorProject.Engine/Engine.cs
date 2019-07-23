@@ -53,12 +53,41 @@ namespace HumanErrorProject.Engine
             }
         }
 
+        public async Task RunMarkovModel(Assignment assignment, MarkovModelOptions options)
+        {
+            try
+            {
+                await RunMarkovModelImpl(assignment, options);
+            }
+            catch (Exception exception)
+            {
+                LogException(exception, assignment);
+            }
+        }
+
+        private async Task RunMarkovModelImpl(Assignment assignment, MarkovModelOptions options)
+        {
+            using (var handler =
+                new DirectoryHandler(Path.Combine(Options.RootDirectory, GetUniqueFolderName(Options.RootDirectory))))
+            {
+                await Runner.RunMarkovModel(assignment, options, handler);
+            }
+        }
+
+        private void LogException(Exception exception, Assignment assignment)
+        {
+            Logger.Log($"Class: '{assignment.CourseClass.Name}'\r\n" +
+                       $"Assignment: '{assignment.Name}'\r\n" +
+                       $"Timestamp: {DateTime.Now}\r\n" +
+                       $"Engine Message - \r\n{exception.Message}\r\n");
+        }
+
         private void LogException(Exception exception, PreAssignment assignment)
         {
-            Logger.Log($"Class: '{assignment.CourseClass.Name}'\n" +
-                       $"Assignment: '{assignment.Name}'\n" +
-                       $"Timestamp: {DateTime.Now}\n" +
-                       $"Engine Message - \n{exception.Message}");
+            Logger.Log($"Class: '{assignment.CourseClass.Name}'\r\n" +
+                       $"Assignment: '{assignment.Name}'\r\n" +
+                       $"Timestamp: {DateTime.Now}\r\n" +
+                       $"Engine Message - \r\n{exception.Message}\r\n");
         }
 
         private async Task RunImplementation(PreAssignment assignment)
@@ -66,7 +95,7 @@ namespace HumanErrorProject.Engine
             using (var handler = new DirectoryHandler(
                 Path.Combine(Options.RootDirectory, GetUniqueFolderName(Options.RootDirectory))))
             {
-                await Runner.Run(assignment, handler);
+                await Runner.RunPreAssignment(assignment, handler);
             }
         }
 
@@ -85,26 +114,26 @@ namespace HumanErrorProject.Engine
             using (var data = new SubmissionData(submission,
                 Path.Combine(Options.RootDirectory, GetUniqueFolderName(Options.RootDirectory))))
             {
-                var email = await Runner.Run(data);
+                var email = await Runner.RunSubmission(data);
                 await EmailService.Send(email);
             }
         }
 
         private void LogEngineException(EngineExceptionData exception)
         {
-            Logger.Log($"Student: '{exception.StudentName}'\n" +
-                       $"Class: '{exception.ClassName}'\n" +
-                       $"Timestamp: {exception.TimeStamp}\n" +
-                       $"Engine Message - \n{exception.Message}");
+            Logger.Log($"Student: '{exception.StudentName}'\r\n" +
+                       $"Class: '{exception.ClassName}'\r\n" +
+                       $"Timestamp: {exception.TimeStamp}\r\n" +
+                       $"Engine Message - \r\n{exception.Message}\r\n");
         }
 
         private void LogException(Exception exception, StudentSubmissionDto submission)
         {
-            Logger.Log($"Student: '{submission.StudentName}'\n" +
-                       $"Class: '{submission.ClassName}'\n" +
-                       $"Timestamp: {DateTime.Now}\n" +
-                       $"Exception Message - \n{exception.Message}\n" +
-                       $"Inner Message - \n{exception.InnerException?.Message}");
+            Logger.Log($"Student: '{submission.StudentName}'\r\n" +
+                       $"Class: '{submission.ClassName}'\r\n" +
+                       $"Timestamp: {DateTime.Now}\r\n" +
+                       $"Exception Message - \r\n{exception.Message}\r\n" +
+                       $"Inner Message - \r\n{exception.InnerException?.Message}\r\n");
         }
 
     }

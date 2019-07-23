@@ -131,6 +131,11 @@ namespace HumanErrorProject.Engine.Test.GeneratorsTests
             {
                 throw new System.NotImplementedException();
             }
+
+            public AbstractSyntaxTreeNode CreateOrDefaultFromFile(DirectoryHandler handler, string path)
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
         public class MockAbstractSyntaxTreeClassExtractor : IAbstractSyntaxTreeClassExtractor
@@ -138,6 +143,11 @@ namespace HumanErrorProject.Engine.Test.GeneratorsTests
             public AbstractSyntaxTreeNode Extract(AbstractSyntaxTreeNode root, string name)
             {
                 return new AbstractSyntaxTreeNode("Root");
+            }
+
+            public AbstractSyntaxTreeNode ExtractOrDefault(AbstractSyntaxTreeNode root, string name)
+            {
+                throw new System.NotImplementedException();
             }
         }
 

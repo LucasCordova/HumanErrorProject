@@ -9,5 +9,6 @@ namespace HumanErrorProject.Engine.Generators
     {
         AbstractSyntaxTreeNode CreateFromFile(SubmissionData data, string path);
         AbstractSyntaxTreeNode CreateFromFile(DirectoryHandler handler, string path);
+        AbstractSyntaxTreeNode CreateOrDefaultFromFile(DirectoryHandler handler, string path);
     }
 }

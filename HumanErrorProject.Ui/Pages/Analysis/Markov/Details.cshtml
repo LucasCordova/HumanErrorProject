@@ -1,0 +1,107 @@
+﻿@page "{id}"
+@model DetailsModel
+@{
+}
+
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.MarkovModel.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.MarkovModel.AssignmentId" />
+}
+
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            @Model.MarkovModel.Publish.ToString("dd MMMM yyyy") Markov Model
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.MarkovModel.Assignment.Name</li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.MarkovModel.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            @await Html.PartialAsync("Shared/_MarkovModelFinishedPartial", Model.MarkovModel)
+        </p>
+        <div class="btn btn-group">
+            <a class="btn btn-primary text-light"
+               asp-page="/Analysis/Markov/Index"
+               asp-route-id="@Model.MarkovModel.AssignmentId"
+               role="button">
+                Back to list
+            </a>
+            <a class="btn btn-primary text-light"
+               asp-page="/Analysis/Index"
+               asp-route-id="@Model.MarkovModel.AssignmentId"
+               role="button">
+                Analysis List
+            </a>
+            <a class="btn btn-primary text-light"
+               asp-page="/Analysis/Details"
+               asp-route-id="@Model.MarkovModel.AssignmentId"
+               role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+@if (Model.MarkovModel.Finished)
+{
+    foreach (var state in Model.MarkovModel.States)
+    {
+        <div class="container shadow-sm bg-light my-3 pt-3 pb-5 px-5">
+            <div class="mx-auto text-center">
+                <h2 class="display-4" id="@state.AnchorTag">
+                    State @state.Number
+                </h2>
+            </div>
+            <table class="table table-striped my-3">
+                <thread>
+                    <tr>
+                        <th class="text-center">Snapshot inside State</th>
+                    </tr>
+                </thread>
+                <tbody>
+                @foreach (var number in state.Snapshots)
+                {
+                    <tr>
+                        <td>
+                            @number.SnapshotId
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">To</th>
+                        <th class="text-center">Probability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var transition in state.Transitions)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <a href="#@transition.AnchorToTag">
+                                    State @transition.To
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                @((transition.Probability * 100).ToString("F0") + "%")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+

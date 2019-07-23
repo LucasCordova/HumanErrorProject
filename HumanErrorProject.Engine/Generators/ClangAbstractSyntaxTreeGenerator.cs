@@ -81,6 +81,25 @@ namespace HumanErrorProject.Engine.Generators
             }
         }
 
+        public AbstractSyntaxTreeNode CreateOrDefaultFromFile(DirectoryHandler handler, string path)
+        {
+            using (var comiplerHandler = new DirectoryHandler(GetCompilationDirectory(handler)))
+            {
+                var process = GetEngineProcess(GetEngineProcessData(comiplerHandler.Directory, path));
+                var exitCode = process.Run();
+                if (exitCode == 0)
+                {
+                    process.Stop();
+                    using (var reader = new StreamReader(GetOutputFile(comiplerHandler.Directory)))
+                    {
+                        return Extractor.Extract(reader);
+                    }
+                }
+                process.Stop();
+                return null;
+            }
+        }
+
         private void ValidatePath(string path)
         {
             if (!File.Exists(path))

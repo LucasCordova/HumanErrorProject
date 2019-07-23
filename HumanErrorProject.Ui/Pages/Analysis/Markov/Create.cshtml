@@ -1,0 +1,167 @@
+﻿@page "{id}"
+@using Data.Models
+@model CreateModel
+@{
+}
+
+@section Navbar
+    {
+    <partial name="_CourseClassNavbarPartial" model="@Model.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.Id" />
+}
+
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Create a Markov Model
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.Assignment.Name</li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <ul class="list-unstyled">
+            <li>
+                @Model.Assignment.Snapshots.Count Number of Snapshots 
+            </li>
+            <li>
+                @Model.Assignment.Snapshots.Count(x => x.Report.Type == SnapshotReport.SnapshotReportTypes.Success) Number of Build Snapshots
+            </li>
+        </ul>
+        <p class="lead">
+            Creating an markov model is quick and easy.
+        </p>
+        <a asp-page="/Analysis/Markov/Index"
+           asp-route-id="@Model.Id"
+           class="text-primary">
+            Back to list
+        </a>
+    </div>
+</div>
+<form method="post">
+    <div class="container my-5">
+        <div class="row text-center">
+            <div class="col-md-6 col-sm-12 bg-dark text-white pt-3 pb-5 px-5 shadow-sm">
+                <h2 class="display-2">
+                    Details
+                </h2>
+                <p class="lead">
+                    <label asp-for="Options.NumberOfStates"></label>
+                </p>
+                <div class="form-group">
+                    <span class="float-right">
+                        <output id="statesOutput">
+                            @if (Model.Options.NumberOfStates < 2)
+                            {
+                                @:2
+                            }
+                            else
+                            {
+                                @Model.Options.NumberOfStates
+                            }
+                        </output>
+                    </span>
+                    <input asp-for="Options.NumberOfStates" type="range"
+                           class="custom-range"
+                           min="2" max="@Model.Assignment.Snapshots.Count" step="1"
+                           id="statesInput" oninput="statesOutput.value = statesInput.value" />
+                    <span asp-validation-for="Options.NumberOfStates" class="text-danger"></span>
+                </div>
+                <p class="lead">
+                    <label asp-for="Options.BuildOnly"></label>
+                </p>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="Options.BuildOnly">
+                        <label class="form-check-label" asp-for="Options.BuildOnly">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 bg-white pt-3 pb-1 px-5 shadow-sm">
+                <h2 class="display-2">
+                    Weights
+                </h2>
+                <p class="lead">
+                    <label asp-for="Options.BuildWeight"></label>
+                </p>
+                <div class="form-group">
+                    <span class="float-right">
+                        <output id="buildOutput">
+                            @Model.Options.BagOfWordsWeight
+                        </output>
+                    </span>
+                    <input asp-for="Options.BuildWeight" type="range"
+                           class="custom-range"
+                           min="0" max="5" step="0.1"
+                           id="buildInput" oninput="buildOutput.value = buildInput.value" />
+                    <span asp-validation-for="Options.BuildWeight" class="text-danger"></span>
+                </div>
+                <p class="lead">
+                    <label asp-for="Options.TestWeight"></label>
+                </p>
+                <div class="form-group">
+                    <span class="float-right">
+                        <output id="testOutput">
+                            @Model.Options.TestWeight
+                        </output>
+                    </span>
+                    <input asp-for="Options.TestWeight" type="range"
+                           class="custom-range"
+                           min="0" max="5" step="0.1"
+                           id="testInput" oninput="testOutput.value = testInput.value" />
+                    <span asp-validation-for="Options.TestWeight" class="text-danger"></span>
+                </div>
+                <p class="lead">
+                    <label asp-for="Options.AbstractSyntaxTreeWeight"></label>
+                </p>
+                <div class="form-group">
+                    <span class="float-right">
+                        <output id="astOutput">
+                            @Model.Options.AbstractSyntaxTreeWeight
+                        </output>
+                    </span>
+                    <input asp-for="Options.AbstractSyntaxTreeWeight" type="range"
+                           class="custom-range"
+                           min="0" max="5" step="0.1"
+                           id="astInput" oninput="astOutput.value = astInput.value" />
+                    <span asp-validation-for="Options.AbstractSyntaxTreeWeight" class="text-danger"></span>
+                </div>
+                <p class="lead">
+                    <label asp-for="Options.BagOfWordsWeight"></label>
+                </p>
+                <div class="form-group">
+                    <span class="float-right">
+                        <output id="bowOutput">
+                            @Model.Options.BagOfWordsWeight
+                        </output>
+                    </span>
+                    <input asp-for="Options.AbstractSyntaxTreeWeight" type="range"
+                           class="custom-range"
+                           min="0" max="5" step="0.1"
+                           id="bowInput" oninput="bowOutput.value = bowInput.value" />
+                    <span asp-validation-for="Options.BagOfWordsWeight" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container my-5 bg-light pt-3 pb-5 px-5 text-center shadow-sm">
+        <h2 class="display-2">
+            Finished ?
+        </h2>
+        <p class="lead">
+            Make sure to duble and triple check.
+        </p>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                Create
+            </button>
+        </div>
+    </div>
+    <div class="container py-5"></div>
+</form>
