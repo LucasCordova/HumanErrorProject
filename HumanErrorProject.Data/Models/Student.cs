@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HumanErrorProject.Data.Models
 {
-    public class Student : IdentityModel<int>
+    public class Student : IdentityModel<string>
     {
         [Required, DisplayName("Student's Full Name"), StringLength(256, ErrorMessage = "Must be less than 256 characters.")]
         public string Name { get; set; }
@@ -19,6 +19,5 @@ namespace HumanErrorProject.Data.Models
         public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();
         [DisplayName("Submission")]
         public virtual ICollection<SnapshotSubmission> Submissions { get; set; } = new List<SnapshotSubmission>();
-        public string IdentityUserId { get; set; }
     }
 }

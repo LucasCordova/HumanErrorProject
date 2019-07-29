@@ -95,7 +95,7 @@ namespace HumanErrorProject.Ui
             services.Configure<ViewOptions>(Configuration.GetSection("ViewOptions"));
             services.Configure<LoggerOptions>(Configuration.GetSection("LoggerOptions"));
 
-            services.AddTransient<IRepository<Student, int>, StudentRepository>();
+            services.AddTransient<IRepository<Student, string>, StudentRepository>();
             services.AddTransient<IRepository<PreAssignment, int>, PreAssignmentRepository>();
             services.AddTransient<IRepository<CourseClass, int>, Repository<CourseClass, int>>();
             services.AddTransient<IRepository<Assignment, int>, AssignmentRepository>();

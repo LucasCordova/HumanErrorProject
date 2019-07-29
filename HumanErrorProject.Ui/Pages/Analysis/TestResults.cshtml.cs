@@ -69,7 +69,7 @@ namespace HumanErrorProject.Ui.Pages.Analysis
             return Page();
         }
 
-        public IActionResult OnPost(int studentId)
+        public IActionResult OnPost(string studentId)
         {
             return RedirectToPage("/Analysis/StudentTestResults",
                 new {id = Id, studentId});

@@ -32,7 +32,7 @@ namespace HumanErrorProject.Ui.Pages.Analysis
         public int Id { get; set; }
 
         [FromRoute]
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
 
         public Assignment Assignment { get; set; }
 
@@ -63,10 +63,6 @@ namespace HumanErrorProject.Ui.Pages.Analysis
 
             Student = Surveys.First().Student;
 
-
-
-            var students = Surveys.Select(x => x.Student).Distinct();
-            ViewData["Students"] = new SelectList(students, "Id", "Name");
             return Page();
         }
 

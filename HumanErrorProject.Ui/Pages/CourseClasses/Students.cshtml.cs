@@ -60,7 +60,7 @@ namespace HumanErrorProject.Ui.Pages.CourseClasses
         }
 
 
-        public async Task<IActionResult> OnPostAddStudentAsync(int studentId)
+        public async Task<IActionResult> OnPostAddStudentAsync(string studentId)
         {
             CourseClass = await CourseClasses.FindAsync(Id);
             if (CourseClass == null) return NotFound();
@@ -83,7 +83,7 @@ namespace HumanErrorProject.Ui.Pages.CourseClasses
             return RedirectToPage(new {id = Id});
         }
 
-        public async Task<IActionResult> OnPostRemoveStudentAsync(int studentId)
+        public async Task<IActionResult> OnPostRemoveStudentAsync(string studentId)
         {
             CourseClass = await CourseClasses.FindAsync(Id);
             if (CourseClass == null) return NotFound();

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HumanErrorProject.Data.DataAccess.Repositories
 {
-    public class StudentRepository : Repository<Student, int>
+    public class StudentRepository : Repository<Student, string>
     {
         public StudentRepository(HumanErrorProjectContext context) : base(context)
         {

@@ -69,7 +69,7 @@ namespace HumanErrorProject.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
-                    Files = table.Column<byte[]>(nullable: false)
+                    Files = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -105,6 +105,21 @@ namespace HumanErrorProject.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PreAssignmentReport",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Type = table.Column<int>(nullable: false),
+                    Report = table.Column<string>(nullable: true),
+                    PreAssignmentCompileFailureReport_Report = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PreAssignmentReport", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SnapshotReport",
                 columns: table => new
                 {
@@ -122,11 +137,9 @@ namespace HumanErrorProject.Data.Migrations
                 name: "Students",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
-                    Email = table.Column<string>(nullable: false),
-                    IdentityUserId = table.Column<string>(nullable: true)
+                    Email = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -174,9 +187,9 @@ namespace HumanErrorProject.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TestFolder = table.Column<string>(nullable: false),
-                    TestProjectFolder = table.Column<string>(nullable: false),
+                    TestProjectFile = table.Column<string>(nullable: false),
                     TestDllFile = table.Column<string>(nullable: false),
-                    Files = table.Column<byte[]>(nullable: false)
+                    Files = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -290,29 +303,6 @@ namespace HumanErrorProject.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MethodDeclarations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    PreprocessorDirective = table.Column<string>(maxLength: 256, nullable: false),
-                    AstType = table.Column<string>(maxLength: 256, nullable: false),
-                    AstMethodRegexExpression = table.Column<string>(nullable: false),
-                    AstMethodParameterRegexExpression = table.Column<string>(nullable: false),
-                    AssignmentSolutionId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MethodDeclarations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MethodDeclarations_AssignmentSolutions_AssignmentSolutionId",
-                        column: x => x.AssignmentSolutionId,
-                        principalTable: "AssignmentSolutions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CodeAnalysisMetrics",
                 columns: table => new
                 {
@@ -340,12 +330,63 @@ namespace HumanErrorProject.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MethodDeclarations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    PreprocessorDirective = table.Column<string>(maxLength: 256, nullable: false),
+                    AstType = table.Column<string>(maxLength: 256, nullable: false),
+                    AstMethodRegexExpression = table.Column<string>(nullable: false),
+                    AstMethodParameterRegexExpression = table.Column<string>(nullable: false),
+                    AssignmentSolutionId = table.Column<int>(nullable: true),
+                    PreAssignmentMissingMethodsFailureReportId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MethodDeclarations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MethodDeclarations_AssignmentSolutions_AssignmentSolutionId",
+                        column: x => x.AssignmentSolutionId,
+                        principalTable: "AssignmentSolutions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MethodDeclarations_PreAssignmentReport_PreAssignmentMissingMethodsFailureReportId",
+                        column: x => x.PreAssignmentMissingMethodsFailureReportId,
+                        principalTable: "PreAssignmentReport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SnapshotSubmission",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedDateTime = table.Column<DateTime>(nullable: false),
+                    Files = table.Column<byte[]>(nullable: false),
+                    StudentId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SnapshotSubmission", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SnapshotSubmission_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StudentCourseClasses",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    StudentId = table.Column<int>(nullable: false),
+                    StudentId = table.Column<string>(nullable: false),
                     CourseClassId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -369,11 +410,9 @@ namespace HumanErrorProject.Data.Migrations
                 name: "Surveys",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Key = table.Column<string>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     PostedTime = table.Column<DateTime>(nullable: false),
-                    StudentId = table.Column<int>(nullable: false),
+                    StudentId = table.Column<string>(nullable: false),
                     IsCompleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -423,17 +462,66 @@ namespace HumanErrorProject.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PreAssignments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 256, nullable: false),
+                    Filename = table.Column<string>(maxLength: 256, nullable: false),
+                    CourseClassId = table.Column<int>(nullable: false),
+                    AssignmentSolutionId = table.Column<int>(nullable: false),
+                    TestProjectId = table.Column<int>(nullable: false),
+                    PreAssignmentReportId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PreAssignments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PreAssignments_AssignmentSolutions_AssignmentSolutionId",
+                        column: x => x.AssignmentSolutionId,
+                        principalTable: "AssignmentSolutions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PreAssignments_CourseClasses_CourseClassId",
+                        column: x => x.CourseClassId,
+                        principalTable: "CourseClasses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PreAssignments_PreAssignmentReport_PreAssignmentReportId",
+                        column: x => x.PreAssignmentReportId,
+                        principalTable: "PreAssignmentReport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PreAssignments_TestProjects_TestProjectId",
+                        column: x => x.TestProjectId,
+                        principalTable: "TestProjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UnitTests",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false),
+                    PreAssignmentFailTestsFailureReportId = table.Column<int>(nullable: true),
                     TestProjectId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UnitTests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UnitTests_PreAssignmentReport_PreAssignmentFailTestsFailureReportId",
+                        column: x => x.PreAssignmentFailTestsFailureReportId,
+                        principalTable: "PreAssignmentReport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_UnitTests_TestProjects_TestProjectId",
                         column: x => x.TestProjectId,
@@ -450,7 +538,7 @@ namespace HumanErrorProject.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Declared = table.Column<bool>(nullable: false),
                     MethodDeclarationId = table.Column<int>(nullable: false),
-                    CodeAnalysisMetricId = table.Column<int>(nullable: false),
+                    CodeAnalysisMetricId = table.Column<int>(nullable: true),
                     SnapshotSuccessReportId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -461,7 +549,7 @@ namespace HumanErrorProject.Data.Migrations
                         column: x => x.CodeAnalysisMetricId,
                         principalTable: "CodeAnalysisMetrics",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_SnapshotMethods_MethodDeclarations_MethodDeclarationId",
                         column: x => x.MethodDeclarationId,
@@ -484,7 +572,7 @@ namespace HumanErrorProject.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     SurveyQuestionId = table.Column<int>(nullable: false),
                     SurveyAnswerId = table.Column<int>(nullable: false),
-                    SurveyId = table.Column<int>(nullable: true)
+                    SurveyId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -528,6 +616,53 @@ namespace HumanErrorProject.Data.Migrations
                         principalTable: "Assignments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Snapshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    SnapshotSubmissionId = table.Column<int>(nullable: false),
+                    AssignmentId = table.Column<int>(nullable: false),
+                    StudentId = table.Column<string>(nullable: false),
+                    SurveyId = table.Column<string>(nullable: true),
+                    SnapshotReportId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Snapshots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Snapshots_Assignments_AssignmentId",
+                        column: x => x.AssignmentId,
+                        principalTable: "Assignments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Snapshots_SnapshotReport_SnapshotReportId",
+                        column: x => x.SnapshotReportId,
+                        principalTable: "SnapshotReport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Snapshots_SnapshotSubmission_SnapshotSubmissionId",
+                        column: x => x.SnapshotSubmissionId,
+                        principalTable: "SnapshotSubmission",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Snapshots_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Snapshots_Surveys_SurveyId",
+                        column: x => x.SurveyId,
+                        principalTable: "Surveys",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -578,6 +713,26 @@ namespace HumanErrorProject.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MarkovModelSnapshot",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    SnapshotId = table.Column<int>(nullable: false),
+                    MarkovModelStateId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MarkovModelSnapshot", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MarkovModelSnapshot_MarkovModelStates_MarkovModelStateId",
+                        column: x => x.MarkovModelStateId,
+                        principalTable: "MarkovModelStates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MarkovModelTransitions",
                 columns: table => new
                 {
@@ -594,55 +749,6 @@ namespace HumanErrorProject.Data.Migrations
                         name: "FK_MarkovModelTransitions_MarkovModelStates_MarkovModelStateId",
                         column: x => x.MarkovModelStateId,
                         principalTable: "MarkovModelStates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Snapshots",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedDateTime = table.Column<DateTime>(nullable: false),
-                    Files = table.Column<byte[]>(nullable: false),
-                    AssignmentId = table.Column<int>(nullable: false),
-                    StudentId = table.Column<int>(nullable: false),
-                    SurveyId = table.Column<int>(nullable: true),
-                    SnapshotReportId = table.Column<int>(nullable: false),
-                    MarkovModelStateId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Snapshots", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Snapshots_Assignments_AssignmentId",
-                        column: x => x.AssignmentId,
-                        principalTable: "Assignments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Snapshots_MarkovModelStates_MarkovModelStateId",
-                        column: x => x.MarkovModelStateId,
-                        principalTable: "MarkovModelStates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Snapshots_SnapshotReport_SnapshotReportId",
-                        column: x => x.SnapshotReportId,
-                        principalTable: "SnapshotReport",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Snapshots_Students_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "Students",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Snapshots_Surveys_SurveyId",
-                        column: x => x.SurveyId,
-                        principalTable: "Surveys",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -717,6 +823,11 @@ namespace HumanErrorProject.Data.Migrations
                 column: "AssignmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MarkovModelSnapshot_MarkovModelStateId",
+                table: "MarkovModelSnapshot",
+                column: "MarkovModelStateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MarkovModelStates_MarkovModelId",
                 table: "MarkovModelStates",
                 column: "MarkovModelId");
@@ -730,6 +841,31 @@ namespace HumanErrorProject.Data.Migrations
                 name: "IX_MethodDeclarations_AssignmentSolutionId",
                 table: "MethodDeclarations",
                 column: "AssignmentSolutionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MethodDeclarations_PreAssignmentMissingMethodsFailureReportId",
+                table: "MethodDeclarations",
+                column: "PreAssignmentMissingMethodsFailureReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreAssignments_AssignmentSolutionId",
+                table: "PreAssignments",
+                column: "AssignmentSolutionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreAssignments_CourseClassId",
+                table: "PreAssignments",
+                column: "CourseClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreAssignments_PreAssignmentReportId",
+                table: "PreAssignments",
+                column: "PreAssignmentReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreAssignments_TestProjectId",
+                table: "PreAssignments",
+                column: "TestProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SnapshotMethods_CodeAnalysisMetricId",
@@ -752,14 +888,14 @@ namespace HumanErrorProject.Data.Migrations
                 column: "AssignmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Snapshots_MarkovModelStateId",
-                table: "Snapshots",
-                column: "MarkovModelStateId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Snapshots_SnapshotReportId",
                 table: "Snapshots",
                 column: "SnapshotReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Snapshots_SnapshotSubmissionId",
+                table: "Snapshots",
+                column: "SnapshotSubmissionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Snapshots_StudentId",
@@ -770,6 +906,11 @@ namespace HumanErrorProject.Data.Migrations
                 name: "IX_Snapshots_SurveyId",
                 table: "Snapshots",
                 column: "SurveyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SnapshotSubmission_StudentId",
+                table: "SnapshotSubmission",
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StudentCourseClasses_CourseClassId",
@@ -812,6 +953,11 @@ namespace HumanErrorProject.Data.Migrations
                 column: "UnitTestId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UnitTests_PreAssignmentFailTestsFailureReportId",
+                table: "UnitTests",
+                column: "PreAssignmentFailTestsFailureReportId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UnitTests_TestProjectId",
                 table: "UnitTests",
                 column: "TestProjectId");
@@ -835,7 +981,13 @@ namespace HumanErrorProject.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "MarkovModelSnapshot");
+
+            migrationBuilder.DropTable(
                 name: "MarkovModelTransitions");
+
+            migrationBuilder.DropTable(
+                name: "PreAssignments");
 
             migrationBuilder.DropTable(
                 name: "SnapshotMethods");
@@ -859,13 +1011,16 @@ namespace HumanErrorProject.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "MarkovModelStates");
+
+            migrationBuilder.DropTable(
                 name: "CodeAnalysisMetrics");
 
             migrationBuilder.DropTable(
                 name: "MethodDeclarations");
 
             migrationBuilder.DropTable(
-                name: "MarkovModelStates");
+                name: "SnapshotSubmission");
 
             migrationBuilder.DropTable(
                 name: "SurveyAnswer");
@@ -883,16 +1038,19 @@ namespace HumanErrorProject.Data.Migrations
                 name: "UnitTests");
 
             migrationBuilder.DropTable(
+                name: "MarkovModels");
+
+            migrationBuilder.DropTable(
                 name: "AbstractSyntaxTreeMetrics");
 
             migrationBuilder.DropTable(
                 name: "BagOfWordsMetrics");
 
             migrationBuilder.DropTable(
-                name: "MarkovModels");
+                name: "Students");
 
             migrationBuilder.DropTable(
-                name: "Students");
+                name: "PreAssignmentReport");
 
             migrationBuilder.DropTable(
                 name: "Assignments");

@@ -53,7 +53,7 @@ namespace HumanErrorProject.Ui.Pages.Surveys
             Context.Entry(Survey).Collection(x => x.Snapshots)
                 .Load();
 
-            var asssignmentGroups = Survey.Snapshots
+            var assignmentGroups = Survey.Snapshots
                 .GroupBy(x => x.AssignmentId)
                 .Skip(Step * Options.StepSize).Take(Options.StepSize)
                 .Select(x => new
@@ -63,7 +63,7 @@ namespace HumanErrorProject.Ui.Pages.Surveys
                 })
                 .ToList();
 
-            return Task.FromResult(asssignmentGroups
+            return Task.FromResult(assignmentGroups
                 .Select(a => a.Snapshots.First()));
         }
 
@@ -71,7 +71,7 @@ namespace HumanErrorProject.Ui.Pages.Surveys
         {
             Context.Entry(Survey).Collection(x => x.Snapshots).Load();
 
-            var asssignmentGroups = Survey.Snapshots
+            var assignmentGroups = Survey.Snapshots
                 .GroupBy(x => x.AssignmentId)
                 .Select(x => new
                 {
@@ -79,7 +79,7 @@ namespace HumanErrorProject.Ui.Pages.Surveys
                     Snapshots = x.OrderBy(y => y.SnapshotSubmission.CreatedDateTime).ToList(),
                 })
                 .ToList();
-            var count = asssignmentGroups.Count();
+            var count = assignmentGroups.Count();
             return Task.FromResult(Step * Options.StepSize < count - Options.StepSize);
         }
 

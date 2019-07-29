@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanErrorProject.Data.Migrations
 {
     [DbContext(typeof(HumanErrorProjectContext))]
-    [Migration("20190613031231_RenameTestProjectFolderToTestProjectFile")]
-    partial class RenameTestProjectFolderToTestProjectFile
+    [Migration("20190729021615_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,8 +76,7 @@ namespace HumanErrorProject.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<byte[]>("Files")
-                        .IsRequired();
+                    b.Property<byte[]>("Files");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -161,6 +160,23 @@ namespace HumanErrorProject.Data.Migrations
                     b.ToTable("MarkovModels");
                 });
 
+            modelBuilder.Entity("HumanErrorProject.Data.Models.MarkovModelSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("MarkovModelStateId");
+
+                    b.Property<int>("SnapshotId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarkovModelStateId");
+
+                    b.ToTable("MarkovModelSnapshot");
+                });
+
             modelBuilder.Entity("HumanErrorProject.Data.Models.MarkovModelState", b =>
                 {
                     b.Property<int>("Id")
@@ -215,6 +231,8 @@ namespace HumanErrorProject.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(256);
 
+                    b.Property<int?>("PreAssignmentMissingMethodsFailureReportId");
+
                     b.Property<string>("PreprocessorDirective")
                         .IsRequired()
                         .HasMaxLength(256);
@@ -223,7 +241,59 @@ namespace HumanErrorProject.Data.Migrations
 
                     b.HasIndex("AssignmentSolutionId");
 
+                    b.HasIndex("PreAssignmentMissingMethodsFailureReportId");
+
                     b.ToTable("MethodDeclarations");
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AssignmentSolutionId");
+
+                    b.Property<int>("CourseClassId");
+
+                    b.Property<string>("Filename")
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    b.Property<int>("PreAssignmentReportId");
+
+                    b.Property<int>("TestProjectId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentSolutionId");
+
+                    b.HasIndex("CourseClassId");
+
+                    b.HasIndex("PreAssignmentReportId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("PreAssignments");
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PreAssignmentReport");
+
+                    b.HasDiscriminator<int>("Type");
                 });
 
             modelBuilder.Entity("HumanErrorProject.Data.Models.Snapshot", b =>
@@ -234,21 +304,18 @@ namespace HumanErrorProject.Data.Migrations
 
                     b.Property<int>("AssignmentId");
 
-                    b.Property<int?>("MarkovModelStateId");
-
                     b.Property<int>("SnapshotReportId");
 
                     b.Property<int>("SnapshotSubmissionId");
 
-                    b.Property<int>("StudentId");
+                    b.Property<string>("StudentId")
+                        .IsRequired();
 
-                    b.Property<int?>("SurveyId");
+                    b.Property<string>("SurveyId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AssignmentId");
-
-                    b.HasIndex("MarkovModelStateId");
 
                     b.HasIndex("SnapshotReportId");
 
@@ -312,7 +379,7 @@ namespace HumanErrorProject.Data.Migrations
                     b.Property<byte[]>("Files")
                         .IsRequired();
 
-                    b.Property<int?>("StudentId");
+                    b.Property<string>("StudentId");
 
                     b.HasKey("Id");
 
@@ -323,14 +390,11 @@ namespace HumanErrorProject.Data.Migrations
 
             modelBuilder.Entity("HumanErrorProject.Data.Models.Student", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Email")
                         .IsRequired();
-
-                    b.Property<string>("IdentityUserId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -349,7 +413,8 @@ namespace HumanErrorProject.Data.Migrations
 
                     b.Property<int>("CourseClassId");
 
-                    b.Property<int>("StudentId");
+                    b.Property<string>("StudentId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -362,19 +427,15 @@ namespace HumanErrorProject.Data.Migrations
 
             modelBuilder.Entity("HumanErrorProject.Data.Models.Survey", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<bool>("IsCompleted");
 
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd();
-
                     b.Property<DateTime>("PostedTime");
 
-                    b.Property<int>("StudentId");
+                    b.Property<string>("StudentId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -423,7 +484,7 @@ namespace HumanErrorProject.Data.Migrations
 
                     b.Property<int>("SurveyAnswerId");
 
-                    b.Property<int?>("SurveyId");
+                    b.Property<string>("SurveyId");
 
                     b.Property<int>("SurveyQuestionId");
 
@@ -444,8 +505,7 @@ namespace HumanErrorProject.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<byte[]>("Files")
-                        .IsRequired();
+                    b.Property<byte[]>("Files");
 
                     b.Property<string>("TestDllFile")
                         .IsRequired();
@@ -470,9 +530,13 @@ namespace HumanErrorProject.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
+                    b.Property<int?>("PreAssignmentFailTestsFailureReportId");
+
                     b.Property<int?>("TestProjectId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PreAssignmentFailTestsFailureReportId");
 
                     b.HasIndex("TestProjectId");
 
@@ -665,6 +729,101 @@ namespace HumanErrorProject.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentBadTestFolderReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+
+                    b.ToTable("PreAssignmentBadTestFolderReport");
+
+                    b.HasDiscriminator().HasValue(8);
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentBuildFailureReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+                    b.Property<string>("Report")
+                        .IsRequired();
+
+                    b.ToTable("PreAssignmentBuildFailureReport");
+
+                    b.HasDiscriminator().HasValue(4);
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentCompileFailureReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+                    b.Property<string>("Report")
+                        .IsRequired()
+                        .HasColumnName("PreAssignmentCompileFailureReport_Report");
+
+                    b.ToTable("PreAssignmentCompileFailureReport");
+
+                    b.HasDiscriminator().HasValue(3);
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentFailTestsFailureReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+
+                    b.ToTable("PreAssignmentFailTestsFailureReport");
+
+                    b.HasDiscriminator().HasValue(7);
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentMissingMethodsFailureReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+
+                    b.ToTable("PreAssignmentMissingMethodsFailureReport");
+
+                    b.HasDiscriminator().HasValue(6);
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentNoClassFailureReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+
+                    b.ToTable("PreAssignmentNoClassFailureReport");
+
+                    b.HasDiscriminator().HasValue(5);
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentNoFileFailureReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+
+                    b.ToTable("PreAssignmentNoFileFailureReport");
+
+                    b.HasDiscriminator().HasValue(2);
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentPendingReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+
+                    b.ToTable("PreAssignmentPendingReport");
+
+                    b.HasDiscriminator().HasValue(0);
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignmentSucessReport", b =>
+                {
+                    b.HasBaseType("HumanErrorProject.Data.Models.PreAssignmentReport");
+
+
+                    b.ToTable("PreAssignmentSucessReport");
+
+                    b.HasDiscriminator().HasValue(1);
+                });
+
             modelBuilder.Entity("HumanErrorProject.Data.Models.SnapshotFailureReport", b =>
                 {
                     b.HasBaseType("HumanErrorProject.Data.Models.SnapshotReport");
@@ -779,6 +938,13 @@ namespace HumanErrorProject.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("HumanErrorProject.Data.Models.MarkovModelSnapshot", b =>
+                {
+                    b.HasOne("HumanErrorProject.Data.Models.MarkovModelState")
+                        .WithMany("Snapshots")
+                        .HasForeignKey("MarkovModelStateId");
+                });
+
             modelBuilder.Entity("HumanErrorProject.Data.Models.MarkovModelState", b =>
                 {
                     b.HasOne("HumanErrorProject.Data.Models.MarkovModel")
@@ -798,6 +964,33 @@ namespace HumanErrorProject.Data.Migrations
                     b.HasOne("HumanErrorProject.Data.Models.AssignmentSolution")
                         .WithMany("MethodDeclarations")
                         .HasForeignKey("AssignmentSolutionId");
+
+                    b.HasOne("HumanErrorProject.Data.Models.PreAssignmentMissingMethodsFailureReport")
+                        .WithMany("MissingMethodDeclarations")
+                        .HasForeignKey("PreAssignmentMissingMethodsFailureReportId");
+                });
+
+            modelBuilder.Entity("HumanErrorProject.Data.Models.PreAssignment", b =>
+                {
+                    b.HasOne("HumanErrorProject.Data.Models.AssignmentSolution", "Solution")
+                        .WithMany()
+                        .HasForeignKey("AssignmentSolutionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("HumanErrorProject.Data.Models.CourseClass", "CourseClass")
+                        .WithMany("PreAssignments")
+                        .HasForeignKey("CourseClassId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("HumanErrorProject.Data.Models.PreAssignmentReport", "PreAssignmentReport")
+                        .WithMany()
+                        .HasForeignKey("PreAssignmentReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("HumanErrorProject.Data.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("HumanErrorProject.Data.Models.Snapshot", b =>
@@ -806,10 +999,6 @@ namespace HumanErrorProject.Data.Migrations
                         .WithMany("Snapshots")
                         .HasForeignKey("AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("HumanErrorProject.Data.Models.MarkovModelState")
-                        .WithMany("Snapshots")
-                        .HasForeignKey("MarkovModelStateId");
 
                     b.HasOne("HumanErrorProject.Data.Models.SnapshotReport", "Report")
                         .WithMany()
@@ -894,6 +1083,10 @@ namespace HumanErrorProject.Data.Migrations
 
             modelBuilder.Entity("HumanErrorProject.Data.Models.UnitTest", b =>
                 {
+                    b.HasOne("HumanErrorProject.Data.Models.PreAssignmentFailTestsFailureReport")
+                        .WithMany("FailUnitTests")
+                        .HasForeignKey("PreAssignmentFailTestsFailureReportId");
+
                     b.HasOne("HumanErrorProject.Data.Models.TestProject")
                         .WithMany("UnitTests")
                         .HasForeignKey("TestProjectId");

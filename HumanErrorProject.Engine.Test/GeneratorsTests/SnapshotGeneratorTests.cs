@@ -22,13 +22,13 @@ namespace HumanErrorProject.Engine.Test.GeneratorsTests
         protected SnapshotGenerator.SnapshotGeneratorObj GeneratorObj;
         protected Student Student;
         protected IRepository<Snapshot, int> Snapshots;
-        protected IRepository<Student, int> Students;
+        protected IRepository<Student, string> Students;
         protected IRepository<SnapshotSubmission, int> SnapshotSubmission;
         protected Assignment Assignment;
         protected StudentSubmissionDto Submission;
         protected SubmissionData Data;
         protected const string StudentName = "Student";
-        protected const int StudentId = 1;
+        protected const string StudentId = "1";
         protected const int LastSnapshotId = 2;
         protected string Root;
         protected const int AssignmentId = 1;
@@ -95,7 +95,7 @@ namespace HumanErrorProject.Engine.Test.GeneratorsTests
                         }
                     }
                 };
-            Students = new MockRepository<Student, int>();
+            Students = new MockRepository<Student, string>();
             Students.Add(Student);
             Snapshots = new MockRepository<Snapshot, int>();
             SnapshotSubmission = new MockRepository<SnapshotSubmission, int>(
