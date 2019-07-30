@@ -306,7 +306,8 @@ namespace HumanErrorProject.Data.Migrations
 
                     b.Property<int>("SnapshotSubmissionId");
 
-                    b.Property<int>("StudentId");
+                    b.Property<string>("StudentId")
+                        .IsRequired();
 
                     b.Property<string>("SurveyId");
 
@@ -376,7 +377,7 @@ namespace HumanErrorProject.Data.Migrations
                     b.Property<byte[]>("Files")
                         .IsRequired();
 
-                    b.Property<int?>("StudentId");
+                    b.Property<string>("StudentId");
 
                     b.HasKey("Id");
 
@@ -387,14 +388,11 @@ namespace HumanErrorProject.Data.Migrations
 
             modelBuilder.Entity("HumanErrorProject.Data.Models.Student", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Email")
                         .IsRequired();
-
-                    b.Property<string>("IdentityUserId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -413,7 +411,8 @@ namespace HumanErrorProject.Data.Migrations
 
                     b.Property<int>("CourseClassId");
 
-                    b.Property<int>("StudentId");
+                    b.Property<string>("StudentId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -433,7 +432,8 @@ namespace HumanErrorProject.Data.Migrations
 
                     b.Property<DateTime>("PostedTime");
 
-                    b.Property<int>("StudentId");
+                    b.Property<string>("StudentId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 

@@ -1,0 +1,21 @@
+﻿@page
+@model ProfileModel
+@{
+}
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            Hello @Model.Username
+        </h1>
+        <p class="lead">
+            Profile
+        </p>
+        <div class="btn-group">
+            <a class="btn btn-primary" role="button"
+               asp-page="/Account/ChangePassword">
+                Change Password
+            </a>
+        </div>
+    </div>
+</div>

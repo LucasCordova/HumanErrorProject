@@ -35,20 +35,27 @@
                                 @student.Submissions.Count Submissions
                             </li>
                         </ul>
-                        <div class="btn-group">
-                            <a class="btn btn-primary text-light"
-                               asp-page="/Students/Edit"
-                               asp-route-id="@student.Id"
-                               role="button">
-                                Edit
-                            </a>
-                            <a class="btn btn-primary text-light"
-                               asp-page="/Students/Delete"
-                               asp-route-id="@student.Id"
-                               role="button">
-                                Delete
-                            </a>
-                        </div>
+                        <form method="post">
+                            <div class="btn-group">
+                                <button class="btn btn-primary text-light"
+                                        type="submit" asp-page-handler="SendLink"
+                                        asp-route-id="@student.Id">
+                                    Send Link
+                                </button>
+                                <a class="btn btn-primary text-light"
+                                   asp-page="/Students/Edit"
+                                   asp-route-id="@student.Id"
+                                   role="button">
+                                    Edit
+                                </a>
+                                <a class="btn btn-primary text-light"
+                                   asp-page="/Students/Delete"
+                                   asp-route-id="@student.Id"
+                                   role="button">
+                                    Delete
+                                </a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

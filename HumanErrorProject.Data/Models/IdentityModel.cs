@@ -5,7 +5,7 @@ namespace HumanErrorProject.Data.Models
 {
     public abstract class IdentityModel<T>
     {
-        [Required, Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public T Id { get; set; }
     }
 }

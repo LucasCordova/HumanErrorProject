@@ -5,7 +5,7 @@ namespace HumanErrorProject.Data.Models
     public class StudentCourseClass : IdentityModel<int>
     {
         [Required]
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         public virtual  Student Student { get; set; }
         [Required]
         public int CourseClassId { get; set; }

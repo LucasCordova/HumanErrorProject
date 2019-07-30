@@ -17,10 +17,10 @@ namespace HumanErrorProject.Engine.Test.EngineTests
     public class EngineRunnerTests
     {
         protected EngineRunner Runner;
-        protected IRepository<Student, int> Students;
+        protected IRepository<Student, string> Students;
         protected IRepository<Survey, string> Surveys;
         protected const string StudentName = "Student";
-        protected const int StudentId = 1;
+        protected const string StudentId = "1";
         protected const string ClassName = "Class";
         protected const int ClassId = 1;
         protected string Root;
@@ -30,7 +30,7 @@ namespace HumanErrorProject.Engine.Test.EngineTests
         [TestInitialize]
         public void Init()
         {
-            Students = new MockRepository<Student, int>(
+            Students = new MockRepository<Student, string>(
                 new List<Student>()
                 {
                     new Student()

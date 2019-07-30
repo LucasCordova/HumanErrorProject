@@ -72,7 +72,7 @@ namespace HumanErrorProject.Ui.Pages.Analysis
             return Page();
         }
 
-        public IActionResult OnPost(int studentId)
+        public IActionResult OnPost(string studentId)
         {
             return RedirectToPage("/Analysis/StudentAbstractSyntaxTrees",
                 new { id = Id, studentId });

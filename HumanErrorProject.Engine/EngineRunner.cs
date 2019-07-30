@@ -17,13 +17,13 @@ namespace HumanErrorProject.Engine
     public class EngineRunner : IEngineRunner
     {
         public EngineRunnerOptions Options { get; }
-        protected IRepository<Student, int> StudentRepository { get; }
+        protected IRepository<Student, string> StudentRepository { get; }
         protected IRepository<Survey, string> SurveyRepository { get; }
         protected ISnapshotGenerator SnapshotGenerator { get; }
         protected IAssignmentGenerator AssignmentGenerator { get; }
         protected IMarkovModelGenerator MarkovModelGenerator { get; }
 
-        public EngineRunner(IOptions<EngineRunnerOptions> options, IRepository<Student, int> studentRepository, IRepository<Survey, string> surveyRepository, ISnapshotGenerator snapshotGenerator,
+        public EngineRunner(IOptions<EngineRunnerOptions> options, IRepository<Student, string> studentRepository, IRepository<Survey, string> surveyRepository, ISnapshotGenerator snapshotGenerator,
             IAssignmentGenerator assignmentGenerator, IMarkovModelGenerator markovModelGenerator)
         {
             StudentRepository = studentRepository;

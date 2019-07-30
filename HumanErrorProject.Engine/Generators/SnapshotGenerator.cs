@@ -17,11 +17,11 @@ namespace HumanErrorProject.Engine.Generators
         protected IRepository<SnapshotSubmission, int> SnapshotSubmissions;
         protected IRepository<Snapshot, int> Snapshots;
         protected ISnapshotReportGenerator ReportGenerator;
-        protected IRepository<Student, int> Students;
+        protected IRepository<Student, string> Students;
         protected IAbstractSyntaxTreeClassExtractor ClassExtractor;
         protected IAbstractSyntaxTreeGenerator AbstractSyntaxTreeGenerator;
 
-        public SnapshotGenerator(ISnapshotDateConverter converter, IRepository<SnapshotSubmission, int> snapshotSubmissions, IRepository<Snapshot, int> snapshots, ISnapshotReportGenerator reportGenerator, IRepository<Student, int> students, IAbstractSyntaxTreeClassExtractor classExtractor, IAbstractSyntaxTreeGenerator abstractSyntaxTreeGenerator)
+        public SnapshotGenerator(ISnapshotDateConverter converter, IRepository<SnapshotSubmission, int> snapshotSubmissions, IRepository<Snapshot, int> snapshots, ISnapshotReportGenerator reportGenerator, IRepository<Student, string> students, IAbstractSyntaxTreeClassExtractor classExtractor, IAbstractSyntaxTreeGenerator abstractSyntaxTreeGenerator)
         {
             Converter = converter;
             SnapshotSubmissions = snapshotSubmissions;

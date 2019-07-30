@@ -32,7 +32,7 @@ namespace HumanErrorProject.Ui.Pages.Analysis
         public int Id { get; set; }
 
         [FromRoute]
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
 
         public Assignment Assignment { get; set; }
 

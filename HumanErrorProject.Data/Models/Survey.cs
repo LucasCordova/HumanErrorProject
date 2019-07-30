@@ -12,7 +12,7 @@ namespace HumanErrorProject.Data.Models
         [Required, DisplayName("Posted Time")]
         public DateTime PostedTime { get; set; } = DateTime.Now;
         [Required]
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         public virtual Student Student { get; set; }
         public virtual ICollection<Snapshot> Snapshots { get; set; } = new List<Snapshot>();
         [Required, DisplayName("Completed")]

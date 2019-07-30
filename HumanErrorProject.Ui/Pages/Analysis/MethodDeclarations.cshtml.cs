@@ -97,7 +97,7 @@ namespace HumanErrorProject.Ui.Pages.Analysis
             };
         }
 
-        public IActionResult OnPost(int studentId)
+        public IActionResult OnPost(string studentId)
         {
             return RedirectToPage("/Analysis/StudentMethodDeclarations",
                 new { id = Id, studentId });

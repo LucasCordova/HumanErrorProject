@@ -52,6 +52,10 @@ namespace HumanErrorProject.Data.DataAccess
                 .Property(x => x.Id)
                 .ValueGeneratedOnAdd();
 
+            builder.Entity<Student>()
+                .Property(x => x.Id)
+                .ValueGeneratedOnAdd();
+
             base.OnModelCreating(builder);
         }
 
