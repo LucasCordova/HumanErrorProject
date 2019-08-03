@@ -1,6 +1,8 @@
 ﻿@using Newtonsoft.Json
 @model DataVisuals.GraphChart
 
+
+<div id="graph_tooltip"></div>
 <script type="text/javascript">
     var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
     var id = '#'.concat(model.Id);
@@ -28,6 +30,34 @@
         .attr('transform',
             'translate(' + margin.left + ',' + margin.top + ')');
 
+    
+    var tooltip = d3.select('#graph_tooltip')
+        .append('div')
+        .style('opacity', 0)
+        .attr('class', 'tooltip')
+        .style('background-color', 'white')
+        .style('border', 'solid')
+        .style('border-width', '2px')
+        .style('border-radius', '5px')
+        .style('padding', '5px');
+
+    var mouseover = function(d) {
+        tooltip.style("opacity", 1);
+    }
+    var mousemove = function(d) {
+        tooltip.html(d.Value)
+            .style('left', (event.pageX + 30) + 'px')
+            .style('top', event.pageY + 'px');
+    }
+
+    var mouseleave = function(d) {
+        tooltip.style('opacity', 0);
+    }
+
+    var mouseclick = function(d) {
+        console.log("Click");
+    }
+
     var link = svg.selectAll('line')
         .data(links)
         .enter()
@@ -39,7 +69,11 @@
         .enter()
         .append('circle')
         .attr('r', radius)
-        .style('fill', function (d) { return d.Color; });
+        .style('fill', function(d) { return d.Color; })
+        .on('mouseover', mouseover)
+        .on('mousemove', mousemove)
+        .on('mouseleave', mouseleave)
+        .on('click', mouseclick);
 
     var simulation = d3.forceSimulation(nodes)
         .force('charge', d3.forceManyBody().strength(-1800))
@@ -51,6 +85,7 @@
         .force('bounds', boxing)
         .on('tick', ticked)
         ;
+
 
     function boxing() {
         for (var i = 0; i < nodes.length; ++i) {

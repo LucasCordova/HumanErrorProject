@@ -60,15 +60,15 @@ namespace HumanErrorProject.Ui.Pages.Analysis.Markov
                 Id = "overall_graph",
                 GraphChartNodes = new List<GraphChartNode>()
                 {
-                    new GraphChartNode() { Id = 1, Name = "A", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 2, Name = "B", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 3, Name = "C", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 4, Name = "D", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 5, Name = "E", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 6, Name = "F", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 7, Name = "G", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 8, Name = "I", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 9, Name = "J", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 1, Value = "A", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 2, Value = "B", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 3, Value = "C", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 4, Value = "D", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 5, Value = "E", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 6, Value = "F", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 7, Value = "G", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 8, Value = "I", Color = DataVisualConstants.PassedColor },
+                    new GraphChartNode() { Id = 9, Value = "J", Color = DataVisualConstants.PassedColor },
                 },
                 GraphCartLinks = new List<GraphCartLink>()
                 {
