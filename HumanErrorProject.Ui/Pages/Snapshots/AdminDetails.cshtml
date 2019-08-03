@@ -1,0 +1,35 @@
+﻿@page "{id}"
+@model AdminDetailsModel
+@{
+}
+
+<div class="container">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold">
+            @Model.Snapshot.Student.Name's Snapshot
+        </h1>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                @Model.Snapshot.SnapshotSubmission.CreatedDateTime.ToString("dd MMMM yyyy")
+            </li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.Snapshot.Assignment.Name
+            </li>
+        </ul>
+        <p class="lead">
+            @await Html.PartialAsync("Shared/_SnapshotReportTypePartial", Model.Snapshot)
+        </p>
+        <div class="btn btn-group">
+            <a href="@Model.ReturnUrl"
+               role="button"
+               class="text-white btn btn-primary">
+                Return
+            </a>
+        </div>
+    </div>
+</div>
+@await Component.InvokeAsync("SnapshotReport", Model.Snapshot)
+<div class="container py-5"></div>

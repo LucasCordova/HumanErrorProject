@@ -6,10 +6,12 @@ using HumanErrorProject.Data.DataAccess;
 using HumanErrorProject.Data.Models;
 using HumanErrorProject.Ui.Constants;
 using HumanErrorProject.Ui.DataVisuals;
+using HumanErrorProject.Ui.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HumanErrorProject.Ui.Pages.Analysis.Markov
 {
@@ -18,11 +20,15 @@ namespace HumanErrorProject.Ui.Pages.Analysis.Markov
     {
         public HumanErrorProjectContext Context;
         public DbSet<MarkovModel> MarkovModels;
+        public DbSet<Snapshot> Snapshots;
+        public ColorHelper ColorHelper;
 
-        public DetailsModel(HumanErrorProjectContext context)
+        public DetailsModel(HumanErrorProjectContext context, ColorHelper colorHelper)
         {
             Context = context;
             MarkovModels = context.Set<MarkovModel>();
+            Snapshots = context.Set<Snapshot>();
+            ColorHelper = colorHelper;
         }
 
         [FromRoute]
@@ -31,6 +37,8 @@ namespace HumanErrorProject.Ui.Pages.Analysis.Markov
         public MarkovModel MarkovModel { get; set; }
 
         public GraphChart GraphChart { get; set; }
+
+        public string ReturnUrl { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -48,6 +56,11 @@ namespace HumanErrorProject.Ui.Pages.Analysis.Markov
 
             GraphChart = GetGraphChart();
 
+            ReturnUrl = Url.Page("/Analysis/Markov/Details", new
+            {
+                Id,
+            });
+
             return Page();
         }
 
@@ -55,36 +68,30 @@ namespace HumanErrorProject.Ui.Pages.Analysis.Markov
         {
             if (!MarkovModel.Finished) return null;
 
+            var nodes = MarkovModel.States.Select(s => new GraphChartNode()
+            {
+                Id = s.Number,
+                Color = DataVisualConstants.PrimaryColor,
+                Radius = 20 + s.Snapshots.Count * 2,
+                Url = $"#{s.AnchorTag}",
+                Html = $"<p><strong>State {s.Number}</strong></p>" +
+                       s.Transitions.Select(t => $"<p>To State {t.To} - {t.Probability * 100:F0}%</p>").Join("")
+            }).ToList();
+
+            var links = MarkovModel.States.Select(s =>
+                s.Transitions.Select(t => new GraphCartLink()
+                {
+                    Color = DataVisualConstants.DarkColor,
+                    Source = s.Number,
+                    Target = t.To,
+                })).SelectMany(x => x).ToList();
+
             return new GraphChart()
             {
                 Id = "overall_graph",
-                GraphChartNodes = new List<GraphChartNode>()
-                {
-                    new GraphChartNode() { Id = 1, Value = "A", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 2, Value = "B", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 3, Value = "C", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 4, Value = "D", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 5, Value = "E", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 6, Value = "F", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 7, Value = "G", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 8, Value = "I", Color = DataVisualConstants.PassedColor },
-                    new GraphChartNode() { Id = 9, Value = "J", Color = DataVisualConstants.PassedColor },
-                },
-                GraphCartLinks = new List<GraphCartLink>()
-                {
-                    new GraphCartLink() { Source = 1, Target = 2, Color = DataVisualConstants.PrimaryColor },
-                    new GraphCartLink() { Source = 1, Target = 5, Color = DataVisualConstants.PrimaryColor },
-                    new GraphCartLink() { Source = 1, Target = 6, Color = DataVisualConstants.PrimaryColor },
-                    new GraphCartLink() { Source = 2, Target = 3, Color = DataVisualConstants.PrimaryColor },
-                    new GraphCartLink() { Source = 2, Target = 7, Color = DataVisualConstants.PrimaryColor },
-                    new GraphCartLink() { Source = 3, Target = 4, Color = DataVisualConstants.PrimaryColor },
-                    new GraphCartLink() { Source = 8, Target = 3, Color = DataVisualConstants.PrimaryColor },
-                    new GraphCartLink() { Source = 4, Target = 5, Color = DataVisualConstants.PrimaryColor },
-                    new GraphCartLink() { Source = 5, Target = 9, Color = DataVisualConstants.PrimaryColor },
-                }
+                GraphCartLinks = links,
+                GraphChartNodes = nodes
             };
-
-            throw new NotImplementedException();
         }
 
     }
