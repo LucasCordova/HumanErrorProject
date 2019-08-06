@@ -40,10 +40,11 @@
         .style('border-radius', '5px')
         .style('padding', '5px');
 
-    var mouseover = function(d) {
+    var mouseover = function (d) {
         tooltip.style("opacity", 1);
     }
     var mousemove = function(d) {
+        console.log("hello");
         tooltip.html(d.Html)
             .style('left', (event.pageX + 30) + 'px')
             .style('top', event.pageY + 'px');
