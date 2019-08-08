@@ -66,5 +66,21 @@
         .attr('y2', function(d) { return(y(d)) })
         .attr('stroke', 'black');
 
+    var jitter_width = boxWidth / 2;
+    svg.selectAll('indPoints')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('cx',
+            function(d) {
+                return center + jitter_width / -2 + Math.random() * jitter_width;
+            })
+        .attr('cy', function(d) {
+            return y(d);
+        })
+        .attr('r', 4)
+        .style('fill', 'white')
+        .attr('stroke', 'black');
+
 
 </script>

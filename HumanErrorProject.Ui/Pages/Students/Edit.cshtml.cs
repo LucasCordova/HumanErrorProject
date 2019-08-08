@@ -22,7 +22,7 @@ namespace HumanErrorProject.Ui.Pages.Students
         }
 
         [FromRoute]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [BindProperty]
         public Student Student { get; set; }
