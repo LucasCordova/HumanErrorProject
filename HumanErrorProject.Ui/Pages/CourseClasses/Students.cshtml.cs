@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using HumanErrorProject.Data.DataAccess;
 using HumanErrorProject.Data.Models;
 using HumanErrorProject.Ui.Constants;
+using HumanErrorProject.Ui.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace HumanErrorProject.Ui.Pages.CourseClasses
 {
@@ -18,16 +20,20 @@ namespace HumanErrorProject.Ui.Pages.CourseClasses
         public HumanErrorProjectContext Context;
         public DbSet<CourseClass> CourseClasses;
         public DbSet<Student> Students;
+        public ViewOptions Options;
 
-        public StudentsModel(HumanErrorProjectContext context)
+        public StudentsModel(HumanErrorProjectContext context, IOptions<ViewOptions> options)
         {
             Context = context;
             CourseClasses = context.Set<CourseClass>();
             Students = context.Set<Student>();
+            Options = options.Value;
         }
 
         [FromRoute]
         public int Id { get; set; }
+
+        [FromRoute] public int Step { get; set; } = 0;
 
         public CourseClass CourseClass { get; set; }
 
@@ -49,8 +55,8 @@ namespace HumanErrorProject.Ui.Pages.CourseClasses
         public Task<IEnumerable<Student>> GetStudents()
         {
             return Task.FromResult<IEnumerable<Student>>(
-                Students.Include(x => x.StudentCourseClasses)
-                );
+                Students.Skip(Step * Options.StepSize).Take(Options.StepSize)
+                    .Include(x => x.StudentCourseClasses));
         }
 
         public Task<bool> IsStudentInClass(Student student)
@@ -101,5 +107,13 @@ namespace HumanErrorProject.Ui.Pages.CourseClasses
 
             return RedirectToPage(new { id = Id });
         }
+
+        public Task<bool> IsNext()
+        {
+            var count = Students.Count();
+            return Task.FromResult(Step * Options.StepSize < count - Options.StepSize);
+        }
+
+        public Task<bool> IsPrevious() => Task.FromResult(Step > 0);
     }
 }

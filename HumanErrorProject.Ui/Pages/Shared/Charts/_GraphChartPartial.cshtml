@@ -1,0 +1,119 @@
+﻿@using Newtonsoft.Json
+@model DataVisuals.GraphChart
+
+
+<div id="graph_tooltip"></div>
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var nodes = model.GraphChartNodes;
+    var links = model.GraphCartLinks;
+
+    for (var i = 0; i < links.length; ++i) {
+        links[i].target = links[i].Target;
+        links[i].source = links[i].Source;
+    }
+
+    var $container = $(id),
+        margin = { top: 30, right: 30, bottom: 30, left: 40 },
+        width = $container.width() - margin.left - margin.right,
+        height = $container.height() - margin.top - margin.bottom;
+
+    var svg = d3.select(id)
+        .append('svg')
+        .attr('width', width + margin.left + margin.right + 'px')
+        .attr('height', height + margin.top + margin.bottom + 'px')
+        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+        .attr('preserveAspectRatio', 'xMidYMax meet')
+        .append('g')
+        .attr('transform',
+            'translate(' + margin.left + ',' + margin.top + ')');
+
+    
+    var tooltip = d3.select('#graph_tooltip')
+        .append('div')
+        .style('opacity', 0)
+        .attr('class', 'tooltip')
+        .style('background-color', 'white')
+        .style('border', 'solid')
+        .style('border-width', '2px')
+        .style('border-radius', '5px')
+        .style('padding', '5px');
+
+    var mouseover = function (d) {
+        tooltip.style("opacity", 1);
+    }
+    var mousemove = function(d) {
+        console.log("hello");
+        tooltip.html(d.Html)
+            .style('left', (event.pageX + 30) + 'px')
+            .style('top', event.pageY + 'px');
+    }
+
+    var mouseleave = function(d) {
+        tooltip.style('opacity', 0);
+    }
+
+
+    var link = svg.selectAll('line')
+        .data(links)
+        .enter()
+        .append('line')
+        .style('stroke', function (d) { return d.Color; });
+
+    var node = svg.selectAll('circle')
+        .data(nodes)
+        .enter()
+        .append('g')
+        .append('a')
+        .attr('xlink:href', function(d) { return d.Url; })
+        .append('circle')
+        .attr('r', function (d) { return d.Radius; })
+        .style('fill', function(d) { return d.Color; })
+        .on('mouseover', mouseover)
+        .on('mousemove', mousemove)
+        .on('mouseleave', mouseleave);
+
+    var simulation = d3.forceSimulation(nodes)
+        .force('charge', d3.forceManyBody().strength(-2000))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('link', d3.forceLink()
+            .id(function (d) { return d.Id; })
+            .links(links)
+        )
+        .force('bounds', boxing)
+        .on('tick', ticked)
+        ;
+
+
+    function boxing() {
+        for (var i = 0; i < nodes.length; ++i) {
+            var node = nodes[i];
+            if (node.x + node.Radius > width) {
+                node.x = width - node.Radius;
+            }
+            if (node.x - node.Radius < 0) {
+                node.x = node.Radius;
+            }
+            if (node.y + node.Radius > height) {
+                node.y = height - node.Radius;
+            }
+            if (node.y - node.Radius < 0) {
+                node.y = node.Radius;
+            }
+        }
+    }
+
+    function ticked() {
+        node.attr('cx', function(d) { return d.x + d.Radius / 2; })
+            .attr('cy', function (d) { return d.y - d.Radius / 2; });
+
+        link.attr('x1', function (d) {
+                return d.source.x + d.source.Radius / 2;
+            })
+            .attr('y1', function(d) { return d.source.y - d.source.Radius / 2; })
+            .attr('x2', function(d) { return d.target.x + d.target.Radius / 2; })
+            .attr('y2', function(d) { return d.target.y - d.target.Radius / 2; });
+
+    }
+</script>

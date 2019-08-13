@@ -1,0 +1,269 @@
+﻿@page "{id}/{state}"
+@using System.Linq
+@using HumanErrorProject.Data.Models
+@using Microsoft.EntityFrameworkCore
+@model StateModel
+@{
+}
+
+@section Navbar
+{
+    <partial name="_CourseClassNavbarPartial" model="@Model.MarkovModel.Assignment.CourseClassId" />
+    <partial name="_AssignmentNavbarPartial" model="@Model.MarkovModel.AssignmentId" />
+}
+
+<div class="container mb-5">
+    <div class="mx-auto text-center">
+        <h1 class="font-weight-bold display-4">
+            State @Model.MarkovModelState.Number
+        </h1>
+        <h3 class="font-weight-bold display-4">
+            @Model.MarkovModel.Publish.ToString("dd MMMM yyyy") Markov Model
+        </h3>
+        <ul class="list-inline">
+            <li class="list-inline-item">@Model.MarkovModel.Assignment.Name</li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @Model.MarkovModel.Assignment.CourseClass.Name
+            </li>
+        </ul>
+        <p class="lead">
+            @await Html.PartialAsync("Shared/_MarkovModelFinishedPartial", Model.MarkovModel)
+        </p>
+        <div class="btn btn-group">
+            <a class="btn btn-primary text-light"
+               asp-page="/Analysis/Markov/Details"
+               asp-route-id="@Model.MarkovModel.Id"
+               role="button">
+                Markov Model
+            </a>
+            <a class="btn btn-primary text-light"
+               asp-page="/Analysis/Markov/Index"
+               asp-route-id="@Model.MarkovModel.AssignmentId"
+               role="button">
+                Back to list
+            </a>
+            <a class="btn btn-primary text-light"
+               asp-page="/Analysis/Index"
+               asp-route-id="@Model.MarkovModel.AssignmentId"
+               role="button">
+                Analysis List
+            </a>
+            <a class="btn btn-primary text-light"
+               asp-page="/Analysis/Details"
+               asp-route-id="@Model.MarkovModel.AssignmentId"
+               role="button">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container shadow-sm bg-light my-3 pt-3 pb-5 px-5">
+    <div class="mx-auto text-center">
+        <h2 class="display-4">
+            Snapshots
+        </h2>
+    </div>
+    <div class="row">
+        <div class="container-fluid">
+            @{
+                var students = Model.MarkovSnapshots.GroupBy(
+                    s => s.StudentId,
+                    s => s,
+                    (key, g) => new { Id = key, Snapshots = g.ToList() });
+            }
+            @foreach (var student in students)
+            {
+                var color = Model.ColorHelper.RandomColor();
+                <a class="btn text-dark" style="border-color: @color; border-width: 2px;">
+                    @student.Snapshots.First().Student.Name
+                    <span class="badge btn-dark">
+                        @student.Snapshots.Count
+                    </span>
+                </a>
+                @foreach (var snapshot in student.Snapshots)
+                {
+                    <a asp-page="/Snapshots/AdminDetails"
+                       asp-route-id="@snapshot.Id"
+                       asp-route-returnUrl="@Model.ReturnUrl"
+                       style="border-color: @color; border-width: 2px;"
+                       class="btn text-dark" role="button">
+                        @snapshot.SnapshotSubmission.CreatedDateTime.ToString("dd MMMM yyyy")
+                    </a>
+                }
+            }
+            @if (Model.DeletedSnapshots > 0)
+            {
+                <p class="lead">
+                    @Model.DeletedSnapshots snapshots deleted.
+                </p>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="container shadow-sm bg-light my-3 pt-3 pb-5 px-5">
+    <div class="mx-auto text-center">
+        <h2 class="display-4">
+            Transitions
+        </h2>
+    </div>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th class="text-center">
+                    To
+                </th>
+                <th class="text-center">
+                    Probability
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transition in Model.MarkovModelState.Transitions)
+            {
+                <tr>
+                    <td class="text-center">
+                        <a asp-page="/Analysis/Markov/State"
+                           asp-route-id="@Model.Id"
+                           asp-route-state="@transition.To">
+                            State @transition.To
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        @((transition.Probability * 100).ToString("F0") + "%")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{
+    var overallBuildChart = Model.GetOverallBuildChart();
+}
+<div class="container bg-light my-3 pt-3 pb-5 px-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h2 class="display-4">
+            State Overall Builds
+        </h2>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                @overallBuildChart.Values[0] Successful
+            </li>
+            <li class="list-inline-item">
+                -
+            </li>
+            <li class="list-inline-item">
+                @overallBuildChart.Values[1] Failures
+            </li>
+        </ul>
+    </div>
+    <div class="row justify-content-center align-items-center ">
+        <div id="@overallBuildChart.Id" class="mh-100px h-300px mw-100px">
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("Shared/Charts/_DonutChartPartial", overallBuildChart)
+
+@if (Model.SuccessfulSnapshots.Count > 0)
+{
+    @await Component.InvokeAsync("AssignmentSnapshotsTestResults", Model.SuccessfulSnapshots)
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                State's Test Results
+            </h2>
+            <p class="lead">
+                Below is the number of snapshots who are passing each tests.
+            </p>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Category</th>
+                    <th class="text-center">Test Name</th>
+                    <th class="text-center">Number of Snapshots Passing</th>
+                    <th class="text-center">Number of Snapshots Failing</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var test in Model.MarkovModel.Assignment.TestProject.UnitTests.OrderBy(x => x.Category))
+                {
+                    <tr>
+                        <td class="text-center">
+                            @test.Category
+                        </td>
+                        <td class="text-center">@test.Name</td>
+                        <td class="text-success text-center">
+                            @Model.SuccessfulSnapshots.Count(x => ((SnapshotSuccessReport)x.Report).UnitTestResults.First(y => y.UnitTestId.Equals(test.Id)).Passed)
+                        </td>
+                        <td class="text-danger text-center">
+                            @Model.SuccessfulSnapshots.Count(x => !((SnapshotSuccessReport)x.Report).UnitTestResults.First(y => y.UnitTestId.Equals(test.Id)).Passed)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="container bg-light my-3 pt-3 pb-5 shadow-sm px-5">
+        <div class="mx-auto text-center">
+            <h2 class="display-4">
+                No Successful Snapshots in this State
+            </h2>
+            <p class="lead">
+                Your students need help!
+            </p>
+        </div>
+    </div>
+}
+@{
+    var overallSurveyChart = Model.GetOverallSurveyChart();
+}
+<div class="container bg-light my-3 pt-3 pb-5 shadow-sm">
+    <div class="mx-auto text-center">
+        <h2 class="display-4">
+            Overall Surveys
+        </h2>
+        <p class="lead">
+            Below is the percentage of completed surveys in this state.
+        </p>
+    </div>
+    <div class="row justify-content-center align-items-center">
+        <div id="@overallSurveyChart.Id" class="mh-100px h-300px mw-100px">
+        </div>
+    </div>
+</div>
+@(await Html.PartialAsync("Shared/Charts/_DonutChartPartial", overallSurveyChart))
+@foreach (var question in (await Model.SurveyQuestions.ToListAsync()).Where(x => x.Type == SurveyQuestion.SurveyQuestionTypes.Rate))
+{
+    var answers = Model.GetSurveyAnswers(question);
+    <div class="container my-3 bg-light py-3 px-5 shadow-sm">
+        <div class="mx-auto text-center">
+            <h3 class="display-4">
+                @await Html.PartialAsync("Shared/_QuestionTypePartial", question)
+            </h3>
+        </div>
+        @await Component.InvokeAsync("SurveyQuestionDisplay", question)
+        <div class="row justify-content-center align-items-center">
+            @if (answers.Any())
+            {
+                var boxAndWhiskerChart = Model.GetBoxAndWhiskerChart((SurveyQuestionRate)question,
+                    answers.Cast<SurveyAnswerRate>().ToList());
+                <div id="@boxAndWhiskerChart.Id" class="mh-100px h-300px mw-300px"></div>
+                @await Html.PartialAsync("Shared/Charts/_BoxAndWhiskerChartPartial", boxAndWhiskerChart)
+            }
+            else
+            {
+                <p class="lead text-danger">
+                    No answers provided
+                </p>
+            }
+        </div>
+    </div>
+}

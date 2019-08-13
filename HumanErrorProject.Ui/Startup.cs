@@ -105,6 +105,7 @@ namespace HumanErrorProject.Ui
             services.AddTransient<IRepository<SnapshotReport, int>, Repository<SnapshotReport, int>>();
             services.AddTransient<IRepository<MarkovModel, int>, Repository<MarkovModel, int>>();
             services.AddTransient<DeleteHelper>();
+            services.AddTransient<ColorHelper>();
         }
 
         public void AddEngineServices(IServiceCollection services)

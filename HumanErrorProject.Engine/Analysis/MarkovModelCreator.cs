@@ -16,7 +16,13 @@ namespace HumanErrorProject.Engine.Analysis
         {
             var states = CreateMarkovModelStates(snapshots, distanceMatrix, numberOfStates);
 
+            for (var i = 0; i < states.Count; ++i)
+            {
+                states[i].Number = i + 1;
+            }
+
             CalculateTransitions(ref states, snapshots);
+
 
             return states;
         }

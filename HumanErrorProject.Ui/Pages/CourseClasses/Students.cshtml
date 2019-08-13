@@ -1,4 +1,4 @@
-﻿@page "{id}"
+﻿@page "{id}/{step?}"
 @model StudentsModel
 @{
 }
@@ -42,7 +42,7 @@
                 <div class="col-1 d-flex">
                     <div class="align-self-center">
                         <form method="post" asp-page-handler="RemoveStudent">
-                            <input name="studentId" value="@student.Id" type="hidden"/>
+                            <input name="studentId" value="@student.Id" type="hidden" />
                             <button type="submit" class="btn btn-link">
                                 <i class="fas fa-angle-double-left fa-2x text-danger"></i>
                             </button>
@@ -70,8 +70,8 @@
                 </div>
                 <div class="col-1 d-flex">
                     <div class="align-self-center">
-                        <form method="post" asp-page-handler="AddStudent" >
-                            <input name="studentId" value="@student.Id" type="hidden"/>
+                        <form method="post" asp-page-handler="AddStudent">
+                            <input name="studentId" value="@student.Id" type="hidden" />
                             <button type="submit" class="btn btn-link">
                                 <i class="fas fa-angle-double-right fa-2x text-success"></i>
                             </button>
@@ -83,4 +83,30 @@
             }
         </div>
     }
+</div>
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (await Model.IsPrevious())
+            {
+                <a asp-page="/CourseClasses/Students"
+                   asp-route-id="@Model.Id"
+                   asp-route-step="@(Model.Step - 1)">
+                    <i class="fas fa-arrow-left"></i>
+                    Previous
+                </a>
+            }
+        </div>
+        <div>
+            @if (await Model.IsNext())
+            {
+                <a asp-page="/CourseClasses/Students"
+                   asp-route-id="@Model.Id"
+                   asp-route-step="@(Model.Step + 1)">
+                    Next
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            }
+        </div>
+    </div>
 </div>

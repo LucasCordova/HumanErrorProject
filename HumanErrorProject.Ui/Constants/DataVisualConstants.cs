@@ -10,5 +10,6 @@ namespace HumanErrorProject.Ui.Constants
         public const string PassedColor = "#28a745";
         public const string FailedColor = "#dc3545";
         public const string PrimaryColor = "#007bff";
+        public const string DarkColor = "#343a40";
     }
 }
