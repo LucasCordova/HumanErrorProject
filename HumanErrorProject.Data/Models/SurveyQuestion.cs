@@ -12,6 +12,10 @@ namespace HumanErrorProject.Data.Models
         [Required, DisplayName("Question Type")]
         public SurveyQuestionTypes Type { get; set; }
 
+        [Required]
+        public int CourseClassId { get; set; }
+        public virtual CourseClass CourseClass { get; set; }
+
         public enum SurveyQuestionTypes
         {
             Qualitative,

@@ -15,12 +15,17 @@ namespace HumanErrorProject.Ui.Pages.Questions
     {
         public HumanErrorProjectContext Context;
         public DbSet<SurveyQuestion> SurveyQuestions;
+        public DbSet<CourseClass> CourseClasses;
 
         public CreateModel(HumanErrorProjectContext context)
         {
             Context = context;
+            CourseClasses = context.Set<CourseClass>();
             SurveyQuestions = context.Set<SurveyQuestion>();
         }
+
+        [FromRoute]
+        public int Id { get; set; }
 
         [FromRoute]
         public int Type { get; set; }
@@ -28,8 +33,14 @@ namespace HumanErrorProject.Ui.Pages.Questions
         [BindProperty]
         public SurveyQuestion Question { get; set; }
 
-        public IActionResult OnGetAsync()
+        public CourseClass CourseClass { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
+            CourseClass = await CourseClasses.FindAsync(Id);
+
+            if (CourseClass == null) return NotFound();
+
             var type = (SurveyQuestion.SurveyQuestionTypes)Type;
             switch (type)
             {
@@ -48,12 +59,22 @@ namespace HumanErrorProject.Ui.Pages.Questions
 
         public async Task<IActionResult> OnPostAsync()
         {
+            CourseClass = await CourseClasses.FindAsync(Id);
+
+            if (CourseClass == null) return NotFound();
+
             if (!ModelState.IsValid)
                 return Page();
 
-            SurveyQuestions.Add(Question);
+            Context.Entry(CourseClass)
+                .Collection(x => x.SurveyQuestions)
+                .Load();
+
+            CourseClass.SurveyQuestions.Add(Question);
+            CourseClasses.Update(CourseClass);
             await Context.SaveChangesAsync();
-            return RedirectToPage("/Questions/Index");
+
+            return RedirectToPage("/Questions/Index", new { Id });
         }
     }
 }

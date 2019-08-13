@@ -18,5 +18,7 @@ namespace HumanErrorProject.Data.Models
         public virtual ICollection<StudentCourseClass> StudentCourseClasses { get; set; } = new List<StudentCourseClass>();
         [DisplayName("In Progress Assignments")]
         public virtual ICollection<PreAssignment> PreAssignments { get; set; } = new List<PreAssignment>();
+        [DisplayName("Survey Questions")]
+        public virtual ICollection<SurveyQuestion> SurveyQuestions { get; set; } = new List<SurveyQuestion>();
     }
 }

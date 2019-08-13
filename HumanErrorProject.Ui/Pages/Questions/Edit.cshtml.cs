@@ -42,9 +42,29 @@ namespace HumanErrorProject.Ui.Pages.Questions
                 return Page();
             }
 
-            SurveyQuestions.Update(Question);
+            var question = await SurveyQuestions.FindAsync(Id);
+
+            question.Required = Question.Required;
+            switch (question.Type)
+            {
+                case SurveyQuestion.SurveyQuestionTypes.Qualitative:
+                    ((SurveyQuestionQualitative) question).Prompt = ((SurveyQuestionQualitative) Question).Prompt;
+                    break;
+                case SurveyQuestion.SurveyQuestionTypes.Rate:
+                    ((SurveyQuestionRate) question).Category = ((SurveyQuestionRate) Question).Category;
+                    ((SurveyQuestionRate) question).Example = ((SurveyQuestionRate) Question).Example;
+                    ((SurveyQuestionRate) question).Explaination = ((SurveyQuestionRate) Question).Explaination;
+                    ((SurveyQuestionRate) question).Range = ((SurveyQuestionRate) Question).Range;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var id = question.CourseClassId;
+
+            SurveyQuestions.Update(question);
             await Context.SaveChangesAsync();
-            return RedirectToPage("/Questions/Index");
+            return RedirectToPage("/Questions/Index", new { id });
         }
     }
 }

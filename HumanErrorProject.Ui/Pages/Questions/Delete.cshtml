@@ -8,7 +8,8 @@
         <div class="col-5">
             <form method="post">
                 <h1 class="font-weight-bold">Delete Question</h1>
-                <a asp-page="/Questions/Index" class="text-primary">
+                <a asp-page="/Questions/Index" 
+                   asp-route-id="@Model.Question.CourseClassId" class="text-primary">
                     Back to list
                 </a>
                 <hr />

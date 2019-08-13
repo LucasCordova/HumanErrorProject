@@ -70,16 +70,16 @@ namespace HumanErrorProject.Ui.Pages.Analysis
         {
             return Surveys.Where(x => x.IsCompleted)
                 .SelectMany(x => x.SurveyResponses)
-                .Where(x => x.SurveyQuestionId.Equals(question.Id))
+                .Where(x => x.SurveyQuestionId.Equals(question.Id) && x.Question.CourseClassId.Equals(Assignment.CourseClassId))
                 .Select(x => x.Answer).ToList();
         }
 
-        public SurveyAnswer GetLatestSurveyAnswerOrDefult(SurveyQuestion question)
+        public SurveyAnswer GetLatestSurveyAnswerOrDefault(SurveyQuestion question)
         {
             return Surveys.OrderBy(x => x.PostedTime)
                 .Where(x => x.IsCompleted).OrderByDescending(x => x.PostedTime)
                 .FirstOrDefault()?.SurveyResponses
-                .FirstOrDefault(x => x.SurveyQuestionId.Equals(question.Id))
+                .FirstOrDefault(x => x.SurveyQuestionId.Equals(question.Id) && x.Question.CourseClassId.Equals(Assignment.CourseClassId))
                 ?.Answer;
         }
 
