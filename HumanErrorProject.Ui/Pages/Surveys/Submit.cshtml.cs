@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HumanErrorProject.Ui.Pages.Surveys
 {
@@ -29,7 +30,6 @@ namespace HumanErrorProject.Ui.Pages.Surveys
         [FromRoute]
         public string Id { get; set; }
 
-
         [BindProperty]
         public IList<SurveyResponse> SurveyResponses { get; set; } = new List<SurveyResponse>();
 
@@ -39,14 +39,17 @@ namespace HumanErrorProject.Ui.Pages.Surveys
             if (survey == null || survey.IsCompleted)
                 return NotFound();
 
-            Context.Entry(survey).Reference(x => x.Student).Load();
+            Context.Entry(survey).Reference(x => x.Student)
+                .Query()
+                .Include(x => x.StudentCourseClasses)
+                .Load();
 
             if (!survey.Student.Email.Equals(User.Identity.Name))
                 return RedirectToPage("/Account/AccessDenied");
 
             var questions = await SurveyQuestionsSet.ToListAsync();
 
-            foreach (var question in questions)
+            foreach (var question in questions.Where(x => survey.Student.StudentCourseClasses.Any(y => y.CourseClassId.Equals(x.CourseClassId))))
             {
                 switch (question.Type)
                 {

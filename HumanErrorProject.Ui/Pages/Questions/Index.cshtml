@@ -1,26 +1,38 @@
-﻿@page "{step?}"
+﻿@page "{id}/{step?}"
 @using HumanErrorProject.Data.Models
 @model IndexModel
 @{
 }
 
+@section Navbar
+{
+    <partial name="_CourseClassNavbarPartial" model="@Model.Id" />
+}
+
 <div class="container">
     <div class="mx-auto text-center">
         <h1 class="font-weight-bold display-4">
-            Your Questions
+            @Model.CourseClass.Name
         </h1>
         <p class="lead">
             All your questions to disect the student's errors
         </p>
         <div class="btn-group">
+            <a asp-page="/CourseClasses/Details"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary text-light" role="button">
+                Details
+            </a>
             <a asp-page="/Questions/Create"
-               asp-route-type="@((int)SurveyQuestion.SurveyQuestionTypes.Qualitative)"
-               class="btn btn-primary" role="button">
+               asp-route-id="@Model.Id"
+               asp-route-type="@((int) SurveyQuestion.SurveyQuestionTypes.Qualitative)"
+               class="btn btn-primary text-light" role="button">
                 Create a Qualitative Question
             </a>
             <a asp-page="/Questions/Create"
-               asp-route-type="@((int)SurveyQuestion.SurveyQuestionTypes.Rate)"
-               class="btn btn-primary" role="button">
+               asp-route-id="@Model.Id"
+               asp-route-type="@((int) SurveyQuestion.SurveyQuestionTypes.Rate)"
+               class="btn btn-primary text-light" role="button">
                 Create a Rate Question
             </a>
         </div>

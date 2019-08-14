@@ -80,7 +80,7 @@
         <div class="row justify-content-center align-items-center">
             @if (question.Type == SurveyQuestion.SurveyQuestionTypes.Qualitative)
             {
-                var answer = Model.GetLatestSurveyAnswerOrDefult(question);
+                var answer = Model.GetLatestSurveyAnswerOrDefault(question);
                 if (answer == null)
                 {
                     <p class="lead text-danger">

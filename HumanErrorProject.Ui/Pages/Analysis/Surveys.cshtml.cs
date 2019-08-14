@@ -65,7 +65,7 @@ namespace HumanErrorProject.Ui.Pages.Analysis
         {
             return Surveys.Where(x => x.IsCompleted)
                 .SelectMany(x => x.SurveyResponses)
-                .Where(x => x.SurveyQuestionId.Equals(question.Id))
+                .Where(x => x.SurveyQuestionId.Equals(question.Id) && x.Question.CourseClassId.Equals(Assignment.CourseClassId))
                 .Select(x => x.Answer).ToList();
         }
 

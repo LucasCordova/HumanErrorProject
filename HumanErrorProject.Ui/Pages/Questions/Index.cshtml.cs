@@ -16,28 +16,48 @@ namespace HumanErrorProject.Ui.Pages.Questions
     [Authorize(Roles = IdentityRoleConstants.Admin)]
     public class IndexModel : PageModel
     {
-        public DbSet<SurveyQuestion> Questions;
+        public HumanErrorProjectContext Context;
+        public DbSet<CourseClass> CourseClasses;
         public ViewOptions Options;
 
         public IndexModel(HumanErrorProjectContext context, IOptions<ViewOptions> options)
         {
-            Questions = context.Set<SurveyQuestion>();
+            Context = context;
+            CourseClasses = context.Set<CourseClass>();
             Options = options.Value;
         }
 
         [FromRoute]
+        public int Id { get; set; }
+
+        [FromRoute]
         public int Step { get; set; } = 0;
 
+        public CourseClass CourseClass { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
+        {
+            CourseClass = await CourseClasses.FindAsync(Id);
+
+            if (CourseClass == null)
+                return NotFound();
+
+            Context.Entry(CourseClass)
+                .Collection(x => x.SurveyQuestions)
+                .Load();
+
+            return Page();
+        }
 
         public Task<IEnumerable<SurveyQuestion>> GetQuestions()
         {
-            return Task.FromResult<IEnumerable<SurveyQuestion>>(
-                Questions.Skip(Step * Options.StepSize).Take(Options.StepSize));
+            return Task.FromResult(
+                CourseClass.SurveyQuestions.Skip(Step * Options.StepSize).Take(Options.StepSize));
         }
 
         public Task<bool> IsNext()
         {
-            var count = Questions.Count();
+            var count = CourseClass.SurveyQuestions.Count();
             return Task.FromResult(Step * Options.StepSize < count - Options.StepSize);
         }
 

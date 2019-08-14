@@ -39,10 +39,12 @@ namespace HumanErrorProject.Ui.Pages.Questions
             Question = await SurveyQuestions.FindAsync(Id);
             if (Question == null) return NotFound();
 
+            var id = Question.CourseClassId;
+
             // TODO: Remove Survey Answers Related
             SurveyQuestions.Remove(Question);
             await Context.SaveChangesAsync();
-            return RedirectToPage("/Questions/Index");
+            return RedirectToPage("/Questions/Index", new {id});
         }
     }
 }

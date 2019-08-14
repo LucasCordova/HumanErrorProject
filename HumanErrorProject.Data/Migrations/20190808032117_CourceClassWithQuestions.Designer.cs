@@ -5,14 +5,16 @@ using HumanErrorProject.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HumanErrorProject.Data.Migrations
 {
     [DbContext(typeof(HumanErrorProjectContext))]
-    partial class HumanErrorProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20190808032117_CourceClassWithQuestions")]
+    partial class CourceClassWithQuestions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -463,7 +465,7 @@ namespace HumanErrorProject.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CourseClassId");
+                    b.Property<int?>("CourseClassId");
 
                     b.Property<bool>("Required");
 
@@ -1068,10 +1070,9 @@ namespace HumanErrorProject.Data.Migrations
 
             modelBuilder.Entity("HumanErrorProject.Data.Models.SurveyQuestion", b =>
                 {
-                    b.HasOne("HumanErrorProject.Data.Models.CourseClass", "CourseClass")
+                    b.HasOne("HumanErrorProject.Data.Models.CourseClass")
                         .WithMany("SurveyQuestions")
-                        .HasForeignKey("CourseClassId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CourseClassId");
                 });
 
             modelBuilder.Entity("HumanErrorProject.Data.Models.SurveyResponse", b =>
