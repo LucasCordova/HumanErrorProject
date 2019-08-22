@@ -208,6 +208,7 @@ namespace HumanErrorProject.Ui
                     UserName = lucas,
                     Email = lucas
                 };
+                
 
                 var result = await userManager.CreateAsync(user, "Human3rr0rPr0j3ct");
                 if (result.Succeeded)

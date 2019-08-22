@@ -74,11 +74,7 @@ namespace HumanErrorProject.Ui.Pages.PendingAssignments
 
             Context.Entry(Assignment).Reference(x => x.PreAssignmentReport).Load();
 
-            if (Assignment.PreAssignmentReport.Type == PreAssignmentReport.PreAssignmentReportTypes.Pending)
-            {
-                BackgroundJob.Enqueue(() => EngineService.RunPreAssignment(Id));
-            }
-            else if (Assignment.PreAssignmentReport.Type == PreAssignmentReport.PreAssignmentReportTypes.Success)
+            if (Assignment.PreAssignmentReport.Type == PreAssignmentReport.PreAssignmentReportTypes.Success)
             {
                 Context.Entry(Assignment).Reference(x => x.Solution).Query()
                     .Include(x => x.MethodDeclarations).Load();
@@ -101,8 +97,12 @@ namespace HumanErrorProject.Ui.Pages.PendingAssignments
             }
             else
             {
-                return BadRequest();
+                Assignment.PreAssignmentReport = new PreAssignmentPendingReport();
+                PreAssignments.Update(Assignment);
+                await Context.SaveChangesAsync();
+                BackgroundJob.Enqueue(() => EngineService.RunPreAssignment(Id));
             }
+
             return RedirectToPage(new {Id});
         }
 

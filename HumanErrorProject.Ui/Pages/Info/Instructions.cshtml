@@ -2,9 +2,331 @@
 
 <div class="container">
     <div class="mx-auto text-center">
-        Instructions
+        <h1 class="display-1">
+            Instructions
+        </h1>
+        <p class="lead">
+            A simple tutorial for getting started.
+        </p>
     </div>
-    <p class="lead">
-        A simple tutorial for getting started.
-    </p>
+    <div class="row mt-3">
+        <div class="p-3 bg-light w-100 h-100">
+            <h1 class="display-4">
+                1. Create Azure Devops Project
+            </h1>
+            <ul>
+                <li>
+                    Log into your <a href="https://app.vsaex.visualstudio.com/me?mkt=en-US">Azure Devops Account</a>.
+                </li>
+                <li>
+                    Under your Azure Devops Organization, click <strong>New Project</strong>.
+                </li>
+                <li>
+                    Name the project <strong>DataStructures</strong>.
+                </li>
+                <li>
+                    Under <strong>Advance</strong> ensure that <strong>Git</strong> is selected for <strong>Version Control</strong> .
+                </li>
+                <li>
+                    Click <strong class="text-primary">Create</strong>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="p-3 bg-light w-100 h-100">
+            <h1 class="display-4">
+                2. Push Data Structure Project to Azure
+            </h1>
+            <ul>
+                <li>
+                    <strong>Open</strong> Command Prompt and <kbd>cd</kbd> to Project Path.
+                </li>
+                <li>
+                    <strong>Run</strong> the command <br />
+                    <samp class="bg-dark text-light px-3 py-1">
+                        git remote add origin/master https://&lt;name_of_organization&gt;.visualstudio.com/_git/DataStructures
+                    </samp>
+                </li>
+                <li class="pt-1">
+                    Then <strong>Run</strong> the command <br />
+                    <samp class="bg-dark text-light px-3 py-1">
+                        git push -u origin/master --all
+                    </samp>
+                </li>
+                <li class="pt-1">
+                    You may be ask to sign into your account to create a personal access token.
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="p-3 bg-light w-100 h-100">
+            <h1 class="display-4">
+                3. Add Post Build Event
+            </h1>
+            <ul>
+                <li>
+                    <strong>Open</strong>the solution in Visual Studio.
+                </li>
+                <li>
+                    <strong>Open</strong> the solution explorer and right click <strong>DataStructures</strong> project.
+                </li>
+                <li>
+                    <strong>Click</strong> properties to open the Property Page.
+                </li>
+                <li>
+                    Change configuration to <strong>All Configurations</strong>.
+                </li>
+                <li>
+                    Change platform to <strong>All Platforms</strong>.
+                </li>
+                <li>
+                    Navigate to <strong>Build Events</strong> > <strong>Post-Build Event</strong>
+                </li>
+                <li>
+                    Click <i class="fas fa-angle-down"></i> then <strong>Select</strong> Edit.
+                </li>
+                <li>
+                    <strong>Insert</strong> the following code <br />
+                    <div class="bg-dark py-1">
+                        <samp class="text-light px-3 py-1">
+                            if not exist "$(SolutionDir)\Snapshots" ( mkdir "$(SolutionDir)\Snapshots" )
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            for /F "tokens=2" %%i in ('date /t') do set mydate=%%i
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            set mytime=%time%
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            set "mydate=%mydate:/=-%"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            set "mytime=%mytime::=.%"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            mkdir "$(SolutionDir)\Snapshots\Snapshot%mydate%_%mytime%"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            copy "$(ProjectDir)" "$(SolutionDir)\Snapshots\Snapshot%mydate%_%mytime%"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            del "$(SolutionDir)\Snapshots\Snapshot%mydate%_%mytime%\*.vcxproj"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            del "$(SolutionDir)\Snapshots\Snapshot%mydate%_%mytime%\*.filters"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            del "$(SolutionDir)\Snapshots\Snapshot%mydate%_%mytime%\*.user"
+                        </samp>
+                        <br />
+                    </div>
+                </li>
+                <li class="pt-1">
+                    Click <strong>OK</strong> then <strong>Apply</strong>.
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="p-3 bg-light w-100 h-100">
+            <h1 class="display-4">
+                4. Create Azure Pipeline
+            </h1>
+            <ul>
+                <li>
+                    <strong>Go</strong> back to your Azure project.
+                </li>
+                <li>
+                    Navigate to <strong>Pipelines</strong> > <strong>Builds</strong>.
+                </li>
+                <li>
+                    Click <strong class="text-primary">New pipeline</strong>.
+                </li>
+                <li>
+                    Click <span class="text-primary">Use the classic editor</span>.
+                </li>
+                <li>
+                    Select <strong>Azure Repos Git</strong> as your Source then <strong>Continue</strong>.
+                </li>
+                <li>
+                    For a template, search and select <strong>Empty Pipeline</strong> and click <strong>Apply</strong>.
+                </li>
+                <li>
+                    Inside the Pipeline, <strong>Add</strong> a task.
+                </li>
+                <li>
+                    Search and find <strong>Copy file</strong> and click <strong>Add</strong>.
+                </li>
+                <li>
+                    Edit <strong>Copy file</strong> and inside the Targer Folder type <strong>$(build.artifactstagingdirectory)</strong>
+                </li>
+                <li>
+                    Inside the Pipeline, <strong>Add</strong> a task.
+                </li>
+                <li>
+                    Search and find <strong>Powershell</strong> and click <strong>Add</strong>.
+                </li>
+                <li>
+                    Edit <strong>Powershell Script</strong> and for Type select <strong>Inline</strong>.
+                </li>
+                <li>
+                    Inside Script, replace the contents with following code. <br />
+                    <div class="bg-dark py-1">
+                        <samp class="text-light px-3 py-1">
+                            function CheckIfInTestProject($testProject, $filename)
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            {
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;return Test-Path -path "$testProject\$filename"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            }
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            Get-ChildItem -Directory -Path "$(build.artifactstagingdirectory)" |
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            Foreach-Object {
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;if ( CheckIfInTestProject $_.FullName "Snapshots" )
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;{
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Write-Host "Success"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Write-Host $_.FullName
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$name = $_.FullName
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compress-Archive -Path $name\Snapshots\* -DestinationPath Snapshots.zip
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$bytes = [System.IO.File]::ReadAllBytes((Resolve-Path .\).Path + "\Snapshots.zip")
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$postParams = @@{
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"StudentName"="<span class="text-danger">Temporary</span>"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ClassName" = "Data Structures Winter"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"SnapshotFolder" = $bytes
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} | ConvertTo-Json
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$header = @@{
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Accept" = "application/json"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ContentType"="application/json"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Try {
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Invoke-RestMethod -Uri "http://oithumanerror-bc9046a8.westus.cloudapp.azure.com/api/Submission"
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Method Post -Body $postParams
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-ContentType 'application/json' -TimeoutSec 60
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Catch {
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Break
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;}
+                        </samp>
+                        <br />
+                        <samp class="text-light px-3 py-1">
+                            }
+                        </samp>
+                        <br />
+                    </div>
+                </li>
+                <li class="pt-1">
+                    <strong>Replace</strong> <span class="text-danger">Temporary</span> with your <strong>Full Name</strong>.
+                </li>
+                <li>
+                    Go to <strong>Triggers</strong> to enable continous integration.
+                </li>
+                <li>
+                    <i class="fas fa-check-square mr-1"></i><strong>Check</strong> the enable continous integration box. 
+                </li>
+                <li>
+                    Last click <strong>Save & Queue</strong>.   
+                </li>
+            </ul>
+
+        </div>
+    </div>
 </div>
